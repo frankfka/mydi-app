@@ -49,6 +49,50 @@ export const profileProgramIdl: Idl = {
       ],
     },
     {
+      name: 'updateDataRecord',
+      accounts: [
+        {
+          name: 'dataRecord',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'user',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'authority',
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: 'authorityRecord',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: 'metadataUri',
+          type: 'string',
+        },
+        {
+          name: 'namespace',
+          type: 'string',
+        },
+        {
+          name: 'bump',
+          type: 'u8',
+        },
+      ],
+    },
+    {
       name: 'deleteDataRecord',
       accounts: [
         {
@@ -58,8 +102,18 @@ export const profileProgramIdl: Idl = {
         },
         {
           name: 'user',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'authority',
           isMut: true,
           isSigner: true,
+        },
+        {
+          name: 'authorityRecord',
+          isMut: false,
+          isSigner: false,
         },
       ],
       args: [

@@ -54,6 +54,8 @@ export type CreateProfileDataParams = GetProfileDataParams & {
   metadataUri: string;
 };
 
+export type UpdateProfileDataParams = CreateProfileDataParams;
+
 export type DeleteProfileDataParams = Omit<
   CreateProfileDataParams,
   'metadataUri'
