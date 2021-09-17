@@ -2,7 +2,7 @@ import {
   GetProfileAuthorityParams,
   GetProfileDataParams,
   ProfileAuthority,
-  ProfileData,
+  SolanaProfileData,
 } from './solanaProfileTypes';
 import { Program } from '@project-serum/anchor';
 import {
@@ -20,7 +20,7 @@ Queries for our solana program
 export const getSolanaProfileData = async (
   program: Program,
   params: GetProfileDataParams
-): Promise<ProfileData | undefined> => {
+): Promise<SolanaProfileData | undefined> => {
   const [dataPda] = await getDataProgramAddress(
     params.userKey,
     params.namespace
@@ -28,7 +28,7 @@ export const getSolanaProfileData = async (
 
   try {
     const fetchedData = await program.account.userDataRecord.fetch(dataPda);
-    return fetchedData as unknown as ProfileData;
+    return fetchedData as unknown as SolanaProfileData;
   } catch (err) {
     if (isAccountNotExistsError(err)) {
       return;

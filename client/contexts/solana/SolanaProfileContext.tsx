@@ -4,106 +4,127 @@ import {
   getSolanaConnection,
   getSolanaProvider,
 } from '../../../util/solana/solanaNetwork';
-import { Wallet } from '@project-serum/anchor';
-import { getAuthorityProgramAddress } from '../../../util/solana/solanaProgramUtils';
+import { Program, Provider, Wallet } from '@project-serum/anchor';
 import {
-  SystemProgram,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
+  getProfileSolanaProgram,
+  solanaAppAuthorityKey,
+} from '../../../util/solana/solanaProgramUtils';
 import {
-  GetProfileAuthorityParams,
-  GetProfileDataParams,
-  ProfileAuthority,
-  ProfileData,
-} from '../../../util/solana/solanaProfileTypes';
+  GetSolanaWalletProfileParams,
+  GetSolanaWalletProfileState,
+  useGetSolanaWalletProfile,
+} from '../../hooks/useGetSolanaWalletProfile';
+import { ProfileGeneralMetadata } from '../../../types/ProfileMetadata';
+import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
+import { Transaction } from '@solana/web3.js';
+import {
+  getCreateSolanaProfileAuthorityIx,
+  getCreateSolanaProfileDataIx,
+} from '../../../util/solana/solanaProgramInstructions';
+import { addIpfsPrefix } from '../../../util/ipfs/cidUtils';
+import { callStoreMetadataApi } from '../../util/storeMetadataApi';
+
+type CreateUserProfileParams = ProfileGeneralMetadata & {
+  createAppAuthority: boolean; // Whether to add instruction to also create an authorization for our app
+};
 
 type SolanaProfileContextState = {
   // Base state
-  walletContext: WalletContextState;
-  // Additional state
-  connectedWallet?: Wallet;
-  /**
-   * Retrieve profile data
-   */
-  getProfileData(
-    params: GetProfileDataParams
-  ): Promise<ProfileData | undefined>;
-  /**
-   * Retrieve profile authority, returning undefined if the authority record does not exist
-   */
-  getProfileAuthority(
-    params: GetProfileAuthorityParams
-  ): Promise<ProfileAuthority | undefined>;
-  /**
-   * Creates profile
-   */
-  tryExecute(): Promise<void>;
+  wallet: WalletContextState;
+  // Profile state
+  userProfile: GetSolanaWalletProfileState;
+  // Transaction utils
+  createUserProfile(params: CreateUserProfileParams): Promise<string>;
+  upsertUserData(namespace: ProfileNamespace, data: any): Promise<string>; // For a specific namespace
+  deleteUserData(namespace: ProfileNamespace): Promise<string>;
+  createAuthority(): Promise<string>; // Requests authorization for our app with "all" scope
 };
 
 export const SolanaProfileContext = createContext<SolanaProfileContextState>(
   {} as unknown as SolanaProfileContextState
 );
 
-/*
-TODO: Think about how to manage this profile for multiple scopes & authorities (maybe only worry about our authority rn)
-- appAuthorityGranted
-- useSwr that fetches all scopes & returns normalized data
-- Expose fns to just grant authority to us + create new profile data
-- Need delete fns as well
- */
-
 export const SolanaProfileContextProvider: React.FC = ({ children }) => {
-  const connection = getSolanaConnection();
-  const solanaWallet = useWallet();
+  const wallet = useWallet();
 
-  const solanaProgram =
-    solanaWallet.wallet != null
-      ? getProfileSolanaProgram(
-          getSolanaProvider(connection, solanaWallet as unknown as Wallet) // TODO (Look at this)
-        )
+  const connection = getSolanaConnection();
+  // Force-cast to anchor Wallet, which requires a signer. This allows us to create txns but not send them
+  const anchorProvider: Provider | undefined =
+    wallet.wallet != null
+      ? getSolanaProvider(connection, wallet as unknown as Wallet)
+      : undefined;
+  const profileProgram: Program | undefined =
+    anchorProvider != null
+      ? getProfileSolanaProgram(anchorProvider)
       : undefined;
 
-  const tryExecute = async () => {
-    if (solanaProgram == null) {
-      console.log('Solana program undefined!');
-      return;
+  // Wallet profile
+  const getUserProfileParams: GetSolanaWalletProfileParams | undefined =
+    wallet.publicKey != null && profileProgram != null
+      ? {
+          program: profileProgram,
+          userKey: wallet.publicKey,
+        }
+      : undefined;
+  const userProfile = useGetSolanaWalletProfile(getUserProfileParams);
+
+  const createUserProfile = async (
+    params: CreateUserProfileParams
+  ): Promise<string> => {
+    if (wallet.publicKey == null) {
+      throw Error('Wallet public key not defined');
     }
-    if (solanaWallet.publicKey == null) {
-      console.log('No public key for wallet!');
-      return;
+    if (profileProgram == null) {
+      throw Error('Program is not defined');
     }
 
-    // Create an authority for the user
-    const [authorityPda, authorityBump] = await getAuthorityProgramAddress(
-      solanaWallet.publicKey,
-      solanaWallet.publicKey,
-      'all'
+    const txn = new Transaction();
+
+    const metadataUri = addIpfsPrefix(
+      await callStoreMetadataApi({
+        displayName: params.displayName,
+        description: params.description,
+        imageUri: params.imageUri,
+      })
     );
-
-    const testTxnIx: TransactionInstruction =
-      solanaProgram.instruction.createAuthorityRecord('all', authorityBump, {
-        accounts: {
-          authorityRecord: authorityPda,
-          user: solanaWallet.publicKey,
-          authority: solanaWallet.publicKey,
-          systemProgram: SystemProgram.programId,
-        },
-      });
-
-    console.log('Ix', testTxnIx);
-
-    const tx = await solanaWallet.sendTransaction(
-      new Transaction().add(testTxnIx),
-      connection,
-      {}
+    const createProfileDataIx = await getCreateSolanaProfileDataIx(
+      profileProgram,
+      {
+        metadataUri: metadataUri,
+        userKey: wallet.publicKey,
+        namespace: 'general',
+      }
     );
+    txn.add(createProfileDataIx);
 
-    console.log('Transaction sent!', tx);
+    if (params.createAppAuthority) {
+      const createAppAuthorityIx = await getCreateSolanaProfileAuthorityIx(
+        profileProgram,
+        {
+          authorityKey: solanaAppAuthorityKey,
+          userKey: wallet.publicKey,
+          scope: 'all',
+        }
+      );
+      txn.add(createAppAuthorityIx);
+    }
+
+    return wallet.sendTransaction(txn, connection);
   };
+  const upsertUserData = async (
+    namespace: ProfileNamespace,
+    data: any
+  ): Promise<string> => {};
+  const deleteUserData = (namespace: ProfileNamespace): Promise<string> => {};
+  const createAuthority = (): Promise<string> => {};
 
   const contextData: SolanaProfileContextState = {
-    tryExecute,
+    wallet,
+    userProfile,
+    createUserProfile,
+    upsertUserData,
+    deleteUserData,
+    createAuthority,
   };
 
   return (

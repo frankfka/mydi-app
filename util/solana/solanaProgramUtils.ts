@@ -9,6 +9,17 @@ if (!SOLANA_PROGRAM_ID) {
   throw Error('Solana program ID not defined');
 }
 
+// Fetch app authority from env
+const APP_AUTHORITY_KEY = process.env.NEXT_PUBLIC_APP_AUTHORITY_PUBKEY;
+if (!APP_AUTHORITY_KEY) {
+  throw Error('Solana app authority key not defined');
+}
+
+/**
+ * ID of our app authority
+ */
+export const solanaAppAuthorityKey = new PublicKey(APP_AUTHORITY_KEY);
+
 /**
  * ID of our deployed solana program
  */

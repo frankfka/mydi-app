@@ -1,21 +1,20 @@
 import React from 'react';
-import ConnectWalletContainer from './components/ConnectWalletContainer';
 import AppPage from '../../components/AppPage';
+import ConnectWalletContainer from './components/ConnectWalletContainer';
 import ProfileOnboardingWizard from './components/ProfileOnboarding/ProfileOnboardingWizard';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useSolanaContext } from '../../contexts/solana/SolanaProfileContext';
+import { useSolanaProfileContext } from '../../contexts/solana/SolanaProfileContext';
 
 const ProfilePage = () => {
-  const wallet = useWallet();
-  const solanaContext = useSolanaContext();
-
-  const showProfileOnboarding =
-    wallet.wallet != null && wallet.signTransaction != null;
+  const solanaContext = useSolanaProfileContext();
 
   const testClick = async () => {
-    await solanaContext.tryExecute();
+    await solanaContext.createUserProfile({
+      createAppAuthority: true,
+      displayName: 'Test!',
+    });
   };
 
+  console.log('Render');
   return (
     <AppPage>
       <ConnectWalletContainer />
