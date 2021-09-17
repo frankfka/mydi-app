@@ -3,11 +3,18 @@ import { Profile } from '../../types/Profile';
 import { PublicKey } from '@solana/web3.js';
 import { profileNamespaces } from '../../util/profile/profileNamespaces';
 import { pull } from 'lodash';
-import { getSolanaProfileData } from '../../util/solana/solanaProgramQueries';
+import {
+  getProfileAuthority,
+  getSolanaProfileData,
+} from '../../util/solana/solanaProgramQueries';
 import { Program } from '@project-serum/anchor';
 import { KeyedMutator } from 'swr/dist/types';
 import { getDataFromCid } from '../../util/ipfs/getDataFromCid';
 import { useMemo } from 'react';
+import { solanaAppAuthorityKey } from '../../util/solana/solanaProgramUtils';
+import { getLogger } from '../../util/logger';
+
+const logger = getLogger('useGetSolanaWalletProfile');
 
 export type GetSolanaWalletProfileState = {
   profile?: Profile;
@@ -26,6 +33,8 @@ const solanaWalletProfileFetcher = async (
   program: Program,
   userKey: PublicKey
 ): Promise<Profile | null> => {
+  logger.debug('Fetching profile for user', userKey.toString());
+
   // To determine if a profile exists, we query the 'general' namespace
   const generalNamespaceData = await getSolanaProfileData(program, {
     namespace: 'general',
@@ -34,6 +43,7 @@ const solanaWalletProfileFetcher = async (
 
   // No profile exists
   if (generalNamespaceData == null) {
+    logger.debug('No general namespace exists for user');
     return null;
   }
 
@@ -55,7 +65,21 @@ const solanaWalletProfileFetcher = async (
   // TODO Merge data from other namespaces (should do this in parallel)
   const otherNamespaces = pull(Object.values(profileNamespaces), 'general');
 
-  // TODO Now get authorities (just our app right now)
+  // Now get authorities (only our app right now)
+  const appAuthority = await getProfileAuthority(program, {
+    scope: 'all',
+    authorityKey: solanaAppAuthorityKey,
+    userKey,
+  });
+
+  if (appAuthority != null) {
+    profile.authorities[solanaAppAuthorityKey.toString()] = {
+      ...appAuthority,
+      scope: 'all',
+    };
+  }
+
+  logger.debug('Finished fetching profile data', profile);
 
   return profile;
 };
@@ -71,7 +95,7 @@ export const useGetSolanaWalletProfile = (
   const { data, error, mutate } = useSWR(swrKey, solanaWalletProfileFetcher);
 
   if (error) {
-    console.error('Error getting wallet profile', error);
+    logger.error('Error getting wallet profile', error);
   }
 
   const isLoading = params != null && !error && data === undefined;

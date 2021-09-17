@@ -5,10 +5,7 @@ import {
   getSolanaProvider,
 } from '../../../util/solana/solanaNetwork';
 import { Program, Provider, Wallet } from '@project-serum/anchor';
-import {
-  getProfileSolanaProgram,
-  solanaAppAuthorityKey,
-} from '../../../util/solana/solanaProgramUtils';
+import { getProfileSolanaProgram } from '../../../util/solana/solanaProgramUtils';
 import {
   GetSolanaWalletProfileParams,
   GetSolanaWalletProfileState,
@@ -16,13 +13,14 @@ import {
 } from '../../hooks/useGetSolanaWalletProfile';
 import { ProfileGeneralMetadata } from '../../../types/ProfileMetadata';
 import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
-import { Transaction } from '@solana/web3.js';
 import {
-  getCreateSolanaProfileAuthorityIx,
-  getCreateSolanaProfileDataIx,
-} from '../../../util/solana/solanaProgramInstructions';
-import { addIpfsPrefix } from '../../../util/ipfs/cidUtils';
-import { callStoreMetadataApi } from '../../util/storeMetadataApi';
+  createAppAuthority,
+  createUserProfile,
+  deleteAppAuthority,
+  deleteUserData,
+  upsertUserData,
+  UpsertUserDataParams,
+} from './solanaProfileContextUtils';
 
 type CreateUserProfileParams = ProfileGeneralMetadata & {
   createAppAuthority: boolean; // Whether to add instruction to also create an authorization for our app
@@ -35,9 +33,10 @@ type SolanaProfileContextState = {
   userProfile: GetSolanaWalletProfileState;
   // Transaction utils
   createUserProfile(params: CreateUserProfileParams): Promise<string>;
-  upsertUserData(namespace: ProfileNamespace, data: any): Promise<string>; // For a specific namespace
-  deleteUserData(namespace: ProfileNamespace): Promise<string>;
-  createAuthority(): Promise<string>; // Requests authorization for our app with "all" scope
+  upsertUserData(params: UpsertUserDataParams): Promise<string>; // For a specific namespace
+  deleteUserData(namespace: ProfileNamespace): Promise<string | undefined>; // Undefined txn ID if there's no data to delete
+  createAppAuthority(): Promise<string>; // Requests authorization for our app with "all" scope
+  deleteAppAuthority(): Promise<string>;
 };
 
 export const SolanaProfileContext = createContext<SolanaProfileContextState>(
@@ -68,63 +67,47 @@ export const SolanaProfileContextProvider: React.FC = ({ children }) => {
       : undefined;
   const userProfile = useGetSolanaWalletProfile(getUserProfileParams);
 
-  const createUserProfile = async (
-    params: CreateUserProfileParams
-  ): Promise<string> => {
-    if (wallet.publicKey == null) {
-      throw Error('Wallet public key not defined');
-    }
+  // A HOC that checks preconditions and refreshes user profile after an operation
+  async function executeOperation<TRet>(
+    fn: (program: Program) => Promise<TRet>
+  ): Promise<TRet> {
     if (profileProgram == null) {
-      throw Error('Program is not defined');
+      throw Error('Program not defined');
     }
+    return fn(profileProgram);
+  }
 
-    const txn = new Transaction();
-
-    const metadataUri = addIpfsPrefix(
-      await callStoreMetadataApi({
-        displayName: params.displayName,
-        description: params.description,
-        imageUri: params.imageUri,
-      })
-    );
-    const createProfileDataIx = await getCreateSolanaProfileDataIx(
-      profileProgram,
-      {
-        metadataUri: metadataUri,
-        userKey: wallet.publicKey,
-        namespace: 'general',
-      }
-    );
-    txn.add(createProfileDataIx);
-
-    if (params.createAppAuthority) {
-      const createAppAuthorityIx = await getCreateSolanaProfileAuthorityIx(
-        profileProgram,
-        {
-          authorityKey: solanaAppAuthorityKey,
-          userKey: wallet.publicKey,
-          scope: 'all',
-        }
-      );
-      txn.add(createAppAuthorityIx);
-    }
-
-    return wallet.sendTransaction(txn, connection);
-  };
-  const upsertUserData = async (
-    namespace: ProfileNamespace,
-    data: any
-  ): Promise<string> => {};
-  const deleteUserData = (namespace: ProfileNamespace): Promise<string> => {};
-  const createAuthority = (): Promise<string> => {};
-
+  /*
+  Data to store in our context
+   */
   const contextData: SolanaProfileContextState = {
     wallet,
     userProfile,
-    createUserProfile,
-    upsertUserData,
-    deleteUserData,
-    createAuthority,
+    async createUserProfile(params: CreateUserProfileParams) {
+      return executeOperation((program) => {
+        return createUserProfile(connection, wallet, program, params);
+      });
+    },
+    async upsertUserData(params: UpsertUserDataParams) {
+      return executeOperation((program) => {
+        return upsertUserData(connection, wallet, program, params);
+      });
+    },
+    async deleteUserData(namespace: ProfileNamespace) {
+      return executeOperation((program) => {
+        return deleteUserData(connection, wallet, program, namespace);
+      });
+    },
+    async createAppAuthority() {
+      return executeOperation((program) => {
+        return createAppAuthority(connection, wallet, program);
+      });
+    },
+    async deleteAppAuthority() {
+      return executeOperation((program) => {
+        return deleteAppAuthority(connection, wallet, program);
+      });
+    },
   };
 
   return (

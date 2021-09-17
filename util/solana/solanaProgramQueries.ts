@@ -9,9 +9,14 @@ import {
   getAuthorityProgramAddress,
   getDataProgramAddress,
 } from './solanaProgramUtils';
+import { getLogger } from '../logger';
+
+const logger = getLogger('SolanaProgramQueries');
 
 const isAccountNotExistsError = (err: unknown) =>
-  err instanceof Error && err.message.includes('Account does not exist');
+  err instanceof Error &&
+  (err.message.includes('Account does not exist') ||
+    err.message.includes('Invalid account discriminator'));
 
 /*
 Queries for our solana program
@@ -25,11 +30,16 @@ export const getSolanaProfileData = async (
     params.userKey,
     params.namespace
   );
+  logger.debug('Executing profile data query with params', params);
 
   try {
     const fetchedData = await program.account.userDataRecord.fetch(dataPda);
+
+    logger.debug('Fetched profile data', fetchedData);
+
     return fetchedData as unknown as SolanaProfileData;
   } catch (err) {
+    logger.warn('Error getting profile data', err);
     if (isAccountNotExistsError(err)) {
       return;
     }
@@ -50,13 +60,17 @@ export const getProfileAuthority = async (
     params.authorityKey,
     params.scope
   );
+  logger.debug('Executing profile authority query with params', params);
 
   try {
     const fetchedAuthority = await program.account.userAuthorityRecord.fetch(
       authorityPda
     );
+    logger.debug('Fetched profile authority', fetchedAuthority);
+
     return fetchedAuthority as unknown as ProfileAuthority;
   } catch (err) {
+    logger.warn('Error getting profile authority', err);
     if (isAccountNotExistsError(err)) {
       return;
     }
