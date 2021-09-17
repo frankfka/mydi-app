@@ -22,7 +22,7 @@ const isAccountNotExistsError = (err: unknown) =>
 Queries for our solana program
  */
 
-export const getSolanaProfileData = async (
+export const getProfileData = async (
   program: Program,
   params: GetProfileDataParams
 ): Promise<SolanaProfileData | undefined> => {

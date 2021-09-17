@@ -19,7 +19,10 @@ if (solClusterConfig === 'LOCALNET') {
 Connection
  */
 export const getSolanaConnection = (): Connection => {
-  return new Connection(solanaNetworkEndpoint);
+  // TODO: make programmatic?
+  return new Connection(solanaNetworkEndpoint, {
+    commitment: 'processed',
+  });
 };
 
 /*

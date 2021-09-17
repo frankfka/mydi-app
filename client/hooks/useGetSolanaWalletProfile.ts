@@ -5,7 +5,7 @@ import { profileNamespaces } from '../../util/profile/profileNamespaces';
 import { pull } from 'lodash';
 import {
   getProfileAuthority,
-  getSolanaProfileData,
+  getProfileData,
 } from '../../util/solana/solanaProgramQueries';
 import { Program } from '@project-serum/anchor';
 import { KeyedMutator } from 'swr/dist/types';
@@ -36,7 +36,7 @@ const solanaWalletProfileFetcher = async (
   logger.debug('Fetching profile for user', userKey.toString());
 
   // To determine if a profile exists, we query the 'general' namespace
-  const generalNamespaceData = await getSolanaProfileData(program, {
+  const generalNamespaceData = await getProfileData(program, {
     namespace: 'general',
     userKey: userKey,
   });

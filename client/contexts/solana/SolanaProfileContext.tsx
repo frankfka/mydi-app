@@ -36,7 +36,7 @@ type SolanaProfileContextState = {
   upsertUserData(params: UpsertUserDataParams): Promise<string>; // For a specific namespace
   deleteUserData(namespace: ProfileNamespace): Promise<string | undefined>; // Undefined txn ID if there's no data to delete
   createAppAuthority(): Promise<string>; // Requests authorization for our app with "all" scope
-  deleteAppAuthority(): Promise<string>;
+  deleteAppAuthority(): Promise<string | undefined>;
 };
 
 export const SolanaProfileContext = createContext<SolanaProfileContextState>(
@@ -74,7 +74,10 @@ export const SolanaProfileContextProvider: React.FC = ({ children }) => {
     if (profileProgram == null) {
       throw Error('Program not defined');
     }
-    return fn(profileProgram);
+    const res = await fn(profileProgram);
+    // Reload data after a short delay
+    setTimeout(userProfile.mutate, 2000);
+    return res;
   }
 
   /*

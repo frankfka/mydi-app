@@ -13,7 +13,13 @@ import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
 import { ProfileGeneralMetadata } from '../../../types/ProfileMetadata';
 import { Program } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { getSolanaProfileData } from '../../../util/solana/solanaProgramQueries';
+import {
+  getProfileAuthority,
+  getProfileData,
+} from '../../../util/solana/solanaProgramQueries';
+import { getLogger } from '../../../util/logger';
+
+const logger = getLogger('solanaProfileContextUtils');
 
 export type CreateUserProfileParams = ProfileGeneralMetadata & {
   createAppAuthority: boolean; // Whether to add instruction to also create an authorization for our app
@@ -94,7 +100,7 @@ export const upsertUserData = async (
   }
 
   // Fetch existing data
-  const existingData = await getSolanaProfileData(profileProgram, {
+  const existingData = await getProfileData(profileProgram, {
     userKey: wallet.publicKey,
     namespace: params.namespace,
   });
@@ -142,13 +148,13 @@ export const deleteUserData = async (
   }
 
   // Check that the namespace exists
-  const existingData = await getSolanaProfileData(profileProgram, {
+  const existingData = await getProfileData(profileProgram, {
     userKey: wallet.publicKey,
     namespace: namespace,
   });
 
   if (!existingData) {
-    console.warn('Attempting to delete user data without an existing entry');
+    logger.warn('Attempting to delete user data without an existing entry');
     return;
   }
 
@@ -203,9 +209,23 @@ export const deleteAppAuthority = async (
   connection: Connection,
   wallet: WalletContextState,
   profileProgram: Program
-): Promise<string> => {
+): Promise<string | undefined> => {
   if (wallet.publicKey == null) {
     throw Error('Wallet public key not defined');
+  }
+
+  // Check that the authority exists
+  const existingData = await getProfileAuthority(profileProgram, {
+    userKey: wallet.publicKey,
+    authorityKey: solanaAppAuthorityKey,
+    scope: 'all',
+  });
+
+  if (!existingData) {
+    logger.warn(
+      'Attempting to delete user authority without an existing entry'
+    );
+    return;
   }
 
   const txn = new Transaction();
