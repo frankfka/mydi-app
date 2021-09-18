@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSolanaProfileContext } from '../../../contexts/solana/SolanaProfileContext';
 import SpacingContainer from '../../../components/SpacingContainer';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 
 const TestSolanaProfileSection = () => {
   const solanaContext = useSolanaProfileContext();

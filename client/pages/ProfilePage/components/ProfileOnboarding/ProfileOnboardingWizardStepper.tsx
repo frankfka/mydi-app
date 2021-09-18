@@ -1,6 +1,5 @@
 import React from 'react';
-import Stepper, { StepperProps } from '@material-ui/core/Stepper';
-import { Step, StepLabel } from '@material-ui/core';
+import { Step, StepLabel, Stepper, StepperProps } from '@mui/material';
 
 type Props = {
   stepLabels: string[];

@@ -1,23 +1,16 @@
 import React, { useState } from 'react';
-import { Box, makeStyles } from '@material-ui/core';
 import ProfileOnboardingWizardStepper from './ProfileOnboardingWizardStepper';
 import ProfileOnboardingWelcomeContent from './ProfileOnboardingWelcomeContent';
-import ProfileOnboardingProfileForm from './ProfileOnboardingProfileForm';
+import ProfileOnboardingProfileForm, {
+  OnboardingProfileFormValues,
+} from './ProfileOnboardingProfileForm';
 import { ONBOARDING_STEPS } from './onboardingSteps';
 import ProfileOnboardingPublishContent from './ProfileOnboardingPublishContent';
+import { Box } from '@mui/material';
 
 type Props = {};
 
-const useStyles = makeStyles((theme) => ({
-  stepper: {},
-  wizardContent: {
-    padding: theme.spacing(2, 4),
-  },
-}));
-
 const ProfileOnboardingWizard: React.FC<Props> = () => {
-  const classes = useStyles();
-
   // Current step + utils
   const [activeStep, setActiveStep] = useState(0);
   const onNext = () => {
@@ -28,11 +21,9 @@ const ProfileOnboardingWizard: React.FC<Props> = () => {
   const onPrev = () => {
     setActiveStep((prev) => (prev > 0 ? prev - 1 : prev));
   };
-
-  // Publish callback
-  const onPublishClicked = () => {
-    console.log('publish');
-  };
+  // User general info state - from form
+  const [userProfileFormValues, setUserProfileFormValues] =
+    useState<OnboardingProfileFormValues>();
 
   // Main content to render for wizard
   let wizardContent: JSX.Element | undefined = undefined;
@@ -48,7 +39,9 @@ const ProfileOnboardingWizard: React.FC<Props> = () => {
       break;
     case 2:
       wizardContent = (
-        <ProfileOnboardingPublishContent onPublishClicked={onPublishClicked} />
+        <ProfileOnboardingPublishContent
+          userProfileValues={userProfileFormValues}
+        />
       );
       break;
   }
@@ -59,10 +52,11 @@ const ProfileOnboardingWizard: React.FC<Props> = () => {
       <ProfileOnboardingWizardStepper
         activeStep={activeStep}
         stepLabels={ONBOARDING_STEPS.map((s) => s.name)}
-        className={classes.stepper}
       />
       {/*Page Content*/}
-      <Box className={classes.wizardContent}>{wizardContent}</Box>
+      <Box py={2} px={4}>
+        {wizardContent}
+      </Box>
     </div>
   );
 };

@@ -1,14 +1,10 @@
 import React from 'react';
-import { makeStyles, Typography } from '@material-ui/core';
 import SpacingContainer from '../../../components/SpacingContainer';
-import { WalletMultiButton } from '@solana/wallet-adapter-material-ui';
 import PaperSectionContainer from '../../../components/PaperSectionContainer';
-
-const useStyles = makeStyles((theme) => ({}));
+import { Typography } from '@mui/material';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 const ConnectWalletContainer = () => {
-  const classes = useStyles();
-
   return (
     <PaperSectionContainer>
       <SpacingContainer justifyContent="center" alignItems="center">

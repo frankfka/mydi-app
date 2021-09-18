@@ -1,9 +1,13 @@
-import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import type { AppProps } from 'next/app';
 
 import theme from '../client/theme/theme';
 import dynamic from 'next/dynamic';
 import { SolanaProfileContextProvider } from '../client/contexts/solana/SolanaProfileContext';
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import createEmotionCache from '../client/theme/createEmotionCache';
+
+import '../styles/global.css';
 
 // Dynamic import with disabled SSR to handle `window is undefined` errors
 const SolanaWalletContextProvider = dynamic(
@@ -13,19 +17,25 @@ const SolanaWalletContextProvider = dynamic(
   }
 );
 
-function App({ Component, pageProps }: AppProps) {
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
+
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+export default function MyApp(props: MyAppProps) {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   return (
-    <>
-      <MuiThemeProvider theme={theme}>
+    <CacheProvider value={emotionCache}>
+      <ThemeProvider theme={theme}>
         <CssBaseline />
         <SolanaWalletContextProvider>
           <SolanaProfileContextProvider>
             <Component {...pageProps} />
           </SolanaProfileContextProvider>
         </SolanaWalletContextProvider>
-      </MuiThemeProvider>
-    </>
+      </ThemeProvider>
+    </CacheProvider>
   );
 }
-
-export default App;

@@ -1,0 +1,11 @@
+/*
+Global overrides for solana-wallet-adapter
+ */
+.wallet-adapter-button {
+    border-radius: 24px !important;
+    font-family: 'Poppins', 'Verdana', 'Arial', sans-serif !important;
+}
+.wallet-adapter-modal-wrapper {
+    border-radius: 24px !important;
+    font-family: 'Poppins', 'Verdana', 'Arial', sans-serif !important;
+}

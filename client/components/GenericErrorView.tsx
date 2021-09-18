@@ -1,6 +1,6 @@
-import { BoxProps, Typography } from '@material-ui/core';
 import React from 'react';
 import CenteredInfoContainer from './CenteredInfoContainer';
+import { BoxProps, Typography } from '@mui/material';
 
 type Props = Partial<BoxProps>;
 

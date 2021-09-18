@@ -4,8 +4,9 @@ import {
 } from '@solana/wallet-adapter-react';
 import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { FC, useMemo } from 'react';
-import { WalletDialogProvider } from '@solana/wallet-adapter-material-ui';
+// import { WalletDialogProvider } from '@solana/wallet-adapter-material-ui';
 import { solanaNetworkEndpoint } from '../../../util/solana/solanaNetwork';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 
 const SolanaWalletContextProvider: FC = ({ children }) => {
   const wallets = useMemo(
@@ -31,7 +32,7 @@ const SolanaWalletContextProvider: FC = ({ children }) => {
   return (
     <ConnectionProvider endpoint={solanaNetworkEndpoint}>
       <WalletProvider wallets={wallets}>
-        <WalletDialogProvider>{children}</WalletDialogProvider>
+        <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );

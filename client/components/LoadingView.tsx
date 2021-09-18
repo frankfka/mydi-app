@@ -1,4 +1,4 @@
-import { BoxProps, CircularProgress } from '@material-ui/core';
+import { BoxProps, CircularProgress } from '@mui/material';
 import React from 'react';
 import CenteredInfoContainer from './CenteredInfoContainer';
 
