@@ -1,12 +1,37 @@
 import React from 'react';
-import PaperSectionContainer from '../../../components/PaperSectionContainer';
 import ProfileOnboardingWizard from './ProfileOnboarding/ProfileOnboardingWizard';
+import {
+  Dialog,
+  DialogContent,
+  DialogProps,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 
-const ProfileOnboardingDialog = () => {
+type Props = {
+  onDoneOnboardingClicked(): void;
+} & DialogProps;
+
+const ProfileOnboardingDialog: React.FC<Props> = ({
+  onDoneOnboardingClicked,
+  ...rest
+}) => {
+  const theme = useTheme();
+  // TODO: Close button when mobile
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
-    <PaperSectionContainer>
-      <ProfileOnboardingWizard />
-    </PaperSectionContainer>
+    <Dialog {...rest} fullWidth maxWidth="sm" fullScreen={fullScreen}>
+      <DialogContent
+        sx={{
+          padding: (theme) => theme.spacing(8),
+        }}
+      >
+        <ProfileOnboardingWizard
+          onDoneOnboardingClicked={onDoneOnboardingClicked}
+        />
+      </DialogContent>
+    </Dialog>
   );
 };
 

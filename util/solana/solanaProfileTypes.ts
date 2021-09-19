@@ -49,5 +49,5 @@ export type CreateProfileAuthorityParams = GetProfileAuthorityParams;
 export type DeleteProfileAuthorityParams = GetProfileAuthorityParams;
 
 export type ProfileAuthority = {
-  lastAuthorized: number;
+  lastAuthorized: BN;
 };

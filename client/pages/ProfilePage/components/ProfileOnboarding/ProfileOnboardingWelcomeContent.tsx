@@ -18,7 +18,7 @@ const ProfileOnboardingWelcomeContent: React.FC<Props> = ({
         since the 1500s.
       </Typography>
       <Button variant="contained" color="primary" onClick={onNextClicked}>
-        Get Started
+        Next
       </Button>
     </SpacingContainer>
   );

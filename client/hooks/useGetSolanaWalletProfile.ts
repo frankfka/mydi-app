@@ -51,6 +51,7 @@ const solanaWalletProfileFetcher = async (
   const generalProfileMetadata = await getDataFromCid(
     generalNamespaceData.metadataUri
   );
+
   const profile: Profile = {
     authorities: {},
     data: {
@@ -75,6 +76,7 @@ const solanaWalletProfileFetcher = async (
   if (appAuthority != null) {
     profile.authorities[solanaAppAuthorityKey.toString()] = {
       ...appAuthority,
+      lastAuthorized: appAuthority.lastAuthorized.toNumber(),
       scope: 'all',
     };
   }

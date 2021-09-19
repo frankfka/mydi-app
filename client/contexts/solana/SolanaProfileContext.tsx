@@ -31,6 +31,9 @@ type SolanaProfileContextState = {
   wallet: WalletContextState;
   // Profile state
   userProfile: GetSolanaWalletProfileState;
+  // Loading/err
+  loading: boolean;
+  error: boolean;
   // Transaction utils
   createUserProfile(params: CreateUserProfileParams): Promise<string>;
   upsertUserData(params: UpsertUserDataParams): Promise<string>; // For a specific namespace
@@ -86,6 +89,8 @@ export const SolanaProfileContextProvider: React.FC = ({ children }) => {
   const contextData: SolanaProfileContextState = {
     wallet,
     userProfile,
+    loading: userProfile.isLoading,
+    error: userProfile.isError,
     async createUserProfile(params: CreateUserProfileParams) {
       return executeOperation((program) => {
         return createUserProfile(connection, wallet, program, params);

@@ -17,14 +17,13 @@ export const getDataFromCid = async <TData>(
   const cleanedCid = getCid(cid);
   const cachedData = cache.get(cleanedCid);
   if (cachedData) {
-    // TODO: Try and see if this actually works
-    console.log('CID data exists in cache');
     return cachedData;
   }
 
+  // TODO: use swr here in wrapper. Also need a timeout: https://dmitripavlutin.com/timeout-fetch-request/
   const resp = await fetch(getCidGatewayUrl(cleanedCid));
   const fetchedData = resp.json();
-
+  console.log('Fetched!');
   cache.put(cleanedCid, fetchedData);
 
   return fetchedData;

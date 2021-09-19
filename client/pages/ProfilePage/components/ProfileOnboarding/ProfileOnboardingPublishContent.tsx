@@ -1,65 +1,87 @@
 import React, { useState } from 'react';
 import SpacingContainer from '../../../../components/SpacingContainer';
-import { Box, Button, Switch, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, Typography } from '@mui/material';
 import { useSolanaProfileContext } from '../../../../contexts/solana/SolanaProfileContext';
 import { OnboardingProfileFormValues } from './ProfileOnboardingProfileForm';
+import { isTransactionSigningDeniedError } from '../../../../contexts/solana/solanaWalletContextUtils';
 
 type Props = {
+  onPrevClicked(): void;
+  onProfileCreated(txnId: string): void;
   userProfileValues?: OnboardingProfileFormValues;
 };
 
-const ProfileOnboardingPublishContent: React.FC<Props> = () => {
-  const [appAuthorityEnabled, setAppAuthorityEnabled] = useState(true);
-
+const ProfileOnboardingPublishContent: React.FC<Props> = ({
+  onPrevClicked,
+  onProfileCreated,
+  userProfileValues,
+}) => {
   // Profile context
   const solanaProfileContext = useSolanaProfileContext();
 
-  // Publish loading state
+  // Publish states
   const [isPublishing, setIsPublishing] = useState(false);
-  // TODO: publish err and complete states
+  const [publishErrText, setPublishErrText] = useState<string>();
+
   // Publish callback
-  const onPublishClicked = () => {
+  const onPublishClicked = async () => {
     setIsPublishing(true);
     try {
-      solanaProfileContext.createUserProfile({
-        createAppAuthority: false,
-        description: '',
-        displayName: '',
-        imageUri: '',
+      const createTxnId = await solanaProfileContext.createUserProfile({
+        createAppAuthority:
+          userProfileValues != null
+            ? userProfileValues.appAuthorityEnabled
+            : true,
+        description: userProfileValues?.description,
+        displayName: userProfileValues?.displayName,
+        imageUri: undefined, // Not enabled yet
       });
+      onProfileCreated(createTxnId);
     } catch (err) {
-      // TODO
+      if (isTransactionSigningDeniedError(err)) {
+        setPublishErrText(
+          'Signing the transaction was denied. Please try again.'
+        );
+      } else {
+        setPublishErrText('Something went wrong. Please try again');
+      }
     }
     setIsPublishing(false);
   };
 
+  const disableInteraction = isPublishing;
+
   return (
     <SpacingContainer fullWidthChildren>
+      {publishErrText && (
+        <Alert severity="error" onClose={() => setPublishErrText(undefined)}>
+          {publishErrText}
+        </Alert>
+      )}
+
       <Typography variant="h4">Almost Done!</Typography>
       <Typography variant="subtitle1">
         It&apos;s time to publish your profile. You will be asked to confirm a
         transaction. There is no additional charge beyond the transaction fee.
       </Typography>
-      <Box
-        display="flex"
-        flexDirection="row"
-        alignItems="center"
-        justifyContent="space-between"
-        flexWrap="nowrap"
-      >
-        <Typography variant="caption">
-          Authorize our app to information to your profile. This is required for
-          CAPTCHA verification and social integration.
-        </Typography>
-        <Switch
-          checked={appAuthorityEnabled}
-          onChange={() => setAppAuthorityEnabled((prev) => !prev)}
+      <SpacingContainer direction="row">
+        <Button onClick={onPrevClicked} disabled={disableInteraction}>
+          Back
+        </Button>
+        <Button
+          variant="contained"
           color="primary"
-        />
-      </Box>
-      <Button variant="contained" color="primary" onClick={onPublishClicked}>
-        Publish Now
-      </Button>
+          onClick={onPublishClicked}
+          disabled={disableInteraction}
+          startIcon={
+            isPublishing ? (
+              <CircularProgress color="primary" size={16} />
+            ) : undefined
+          }
+        >
+          Publish Now
+        </Button>
+      </SpacingContainer>
     </SpacingContainer>
   );
 };

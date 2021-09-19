@@ -10,7 +10,7 @@ const GenericErrorView: React.FC<Props> = (props) => {
       <Typography variant="h4" paragraph>
         Something went wrong.
       </Typography>
-      <Typography variant="subtitle1" paragraph color="textSecondary">
+      <Typography variant="subtitle1">
         Please refresh the page and try again.
       </Typography>
     </CenteredInfoContainer>

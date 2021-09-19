@@ -1,19 +1,19 @@
 import React from 'react';
-import { Container, ContainerProps } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 
-const AppPage: React.FC<ContainerProps> = ({ children, ...rest }) => {
+const AppPage: React.FC<BoxProps> = ({ children, ...rest }) => {
   return (
     <div>
       {/*Nav Bar*/}
       {/*Main content*/}
-      <Container
+      <Box
         {...rest}
         sx={{
-          padding: (theme) => theme.spacing(4),
+          padding: (theme) => theme.spacing(12, 12),
         }}
       >
         {children}
-      </Container>
+      </Box>
     </div>
   );
 };

@@ -1,17 +1,14 @@
 import { createTheme } from '@mui/material';
+import { deepOrange, indigo } from '@mui/material/colors';
 
-// TODO: address theming
 const theme = createTheme({
   palette: {
-    primary: {
-      main: '#083BF1',
-    },
-    secondary: {
-      main: '#FF4F5A',
-    },
+    mode: 'light',
+    primary: deepOrange,
+    secondary: indigo,
   },
   typography: {
-    fontFamily: 'Poppins, Verdana, Arial',
+    fontFamily: 'Poppins, Verdana, Arial, san-serif',
     button: {
       textTransform: 'none',
     },
