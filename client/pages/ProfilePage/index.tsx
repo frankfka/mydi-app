@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppPage from '../../components/AppPage';
 import ConnectWalletContainer from './components/ConnectWalletContainer';
 import TestSolanaProfileSection from './components/TestSolanaProfileSection';
@@ -8,9 +8,24 @@ import CreateProfileContainer from './components/CreateProfileContainer';
 import GenericErrorView from '../../components/GenericErrorView';
 import LoadingView from '../../components/LoadingView';
 import PaperSectionContainer from '../../components/PaperSectionContainer';
+import useUser from '../../hooks/useUser';
 
 const ProfilePage = () => {
   const solanaProfileContext = useSolanaProfileContext();
+  const userSession = useUser();
+
+  // Reload session on public key change, this should eventually be in a AppContext that brings everything together
+  useEffect(() => {
+    // console.log('Pub key changed', solanaProfileContext.wallet.publicKey);
+    if (solanaProfileContext.wallet.publicKey != null) {
+      const pubKey = solanaProfileContext.wallet.publicKey.toString();
+      if (pubKey !== userSession.user?.user?.pubKey) {
+        userSession.login(pubKey);
+      }
+    } else if (userSession.user?.user != null) {
+      userSession.logout();
+    }
+  }, [solanaProfileContext.wallet.publicKey, userSession.login]);
 
   const [showOnboardingDialog, setShowOnboardingDialog] = useState(false);
   const openOnboardingDialog = () => setShowOnboardingDialog(true);
@@ -20,6 +35,10 @@ const ProfilePage = () => {
     wallet: solanaProfileContext.wallet.wallet,
     userKey: solanaProfileContext.wallet.publicKey,
     ready: solanaProfileContext.wallet.ready,
+  });
+
+  console.log('User state', {
+    pubKey: userSession.user?.user?.pubKey,
   });
 
   const isLoading = solanaProfileContext.loading;
@@ -45,6 +64,7 @@ const ProfilePage = () => {
       </div>
     );
   } else {
+    // TODO
     profileContentElement = <h1>Not handled state</h1>;
   }
 

@@ -23,7 +23,6 @@ export const getDataFromCid = async <TData>(
   // TODO: use swr here in wrapper. Also need a timeout: https://dmitripavlutin.com/timeout-fetch-request/
   const resp = await fetch(getCidGatewayUrl(cleanedCid));
   const fetchedData = resp.json();
-  console.log('Fetched!');
   cache.put(cleanedCid, fetchedData);
 
   return fetchedData;
