@@ -8,6 +8,7 @@ import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from '../client/theme/createEmotionCache';
 
 import '../styles/global.css';
+import { AppContextProvider } from '../client/contexts/AppContext';
 
 // Dynamic import with disabled SSR to handle `window is undefined` errors
 const SolanaWalletContextProvider = dynamic(
@@ -32,7 +33,9 @@ export default function MyApp(props: MyAppProps) {
         <CssBaseline />
         <SolanaWalletContextProvider>
           <SolanaProfileContextProvider>
-            <Component {...pageProps} />
+            <AppContextProvider>
+              <Component {...pageProps} />
+            </AppContextProvider>
           </SolanaProfileContextProvider>
         </SolanaWalletContextProvider>
       </ThemeProvider>

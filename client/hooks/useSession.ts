@@ -64,7 +64,7 @@ export default function useSession(): UseSessionState {
   const isLoading = sessionEndpointIsLoading || isMutating;
   const isError = sessionEndpointIsErr || isMutationError;
   return {
-    session: session,
+    session,
     isLoading,
     isError,
     createSession,

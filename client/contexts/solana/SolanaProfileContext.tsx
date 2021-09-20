@@ -26,14 +26,14 @@ type CreateUserProfileParams = ProfileGeneralMetadata & {
   createAppAuthority: boolean; // Whether to add instruction to also create an authorization for our app
 };
 
-type SolanaProfileContextState = {
+export type SolanaProfileContextState = {
   // Base state
   wallet: WalletContextState;
   // Profile state
   userProfile: GetSolanaWalletProfileState;
   // Loading/err
-  loading: boolean;
-  error: boolean;
+  isLoading: boolean;
+  isError: boolean;
   // Transaction utils
   createUserProfile(params: CreateUserProfileParams): Promise<string>;
   upsertUserData(params: UpsertUserDataParams): Promise<string>; // For a specific namespace
@@ -89,8 +89,8 @@ export const SolanaProfileContextProvider: React.FC = ({ children }) => {
   const contextData: SolanaProfileContextState = {
     wallet,
     userProfile,
-    loading: userProfile.isLoading,
-    error: userProfile.isError,
+    isLoading: userProfile.isLoading,
+    isError: userProfile.isError,
     async createUserProfile(params: CreateUserProfileParams) {
       return executeOperation((program) => {
         return createUserProfile(connection, wallet, program, params);
