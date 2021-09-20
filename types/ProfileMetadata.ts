@@ -7,3 +7,5 @@ export type ProfileGeneralMetadata = {
   description?: string;
   imageUri?: string;
 };
+
+export type ProfileCaptchaMetadata = never;

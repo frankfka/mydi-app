@@ -12,7 +12,7 @@ export type StoreMetadataResponse = {
 
 /**
  * Stores metadata in body.data and returns the CID
- * TODO: Better typing
+ * TODO: Better typing & require session
  * @param req
  * @param res
  */

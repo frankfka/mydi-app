@@ -7,7 +7,7 @@ import {
   AppSessionData,
   CurrentWalletSessionData,
 } from '../../../types/SessionTypes';
-import { SESSION_USER_KEY } from '../../../util/session/sessionData';
+import { SESSION_WALLET_KEY } from '../../../util/session/sessionData';
 
 export type CreateSessionResponse = AppSessionData;
 
@@ -35,7 +35,7 @@ async function handler(
   }
 
   // Create a new session
-  await req.session.set<CurrentWalletSessionData>(SESSION_USER_KEY, {
+  await req.session.set<CurrentWalletSessionData>(SESSION_WALLET_KEY, {
     pubKey,
   });
   await req.session.save();

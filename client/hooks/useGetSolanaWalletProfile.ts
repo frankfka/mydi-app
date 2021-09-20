@@ -13,6 +13,7 @@ import { getDataFromCid } from '../../util/ipfs/getDataFromCid';
 import { useMemo } from 'react';
 import { solanaAppAuthorityKey } from '../../util/solana/solanaProgramUtils';
 import { getLogger } from '../../util/logger';
+import { ProfileGeneralMetadata } from '../../types/ProfileMetadata';
 
 const logger = getLogger('useGetSolanaWalletProfile');
 
@@ -48,7 +49,7 @@ const solanaWalletProfileFetcher = async (
   }
 
   // Now start to fetch other namespaces and add to baseProfile
-  const generalProfileMetadata = await getDataFromCid(
+  const generalProfileMetadata = await getDataFromCid<ProfileGeneralMetadata>(
     generalNamespaceData.metadataUri
   );
 
@@ -59,6 +60,7 @@ const solanaWalletProfileFetcher = async (
         data: generalProfileMetadata ?? {},
         lastUpdated: generalNamespaceData.lastUpdated.toNumber(),
         authority: generalNamespaceData.authority.toString(),
+        metadataUri: generalNamespaceData.metadataUri,
       },
     },
   };

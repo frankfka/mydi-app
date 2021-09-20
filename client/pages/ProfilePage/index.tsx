@@ -9,6 +9,7 @@ import LoadingView from '../../components/LoadingView';
 import PaperSectionContainer from '../../components/PaperSectionContainer';
 import { useAppContext } from '../../contexts/AppContext';
 import { getLogger } from '../../../util/logger';
+import ProfileContentSections from './components/ProfileContentSections';
 
 const logger = getLogger('ProfilePage');
 
@@ -19,26 +20,30 @@ const ProfilePage = () => {
   const openOnboardingDialog = () => setShowOnboardingDialog(true);
   const closeOnboardingDialog = () => setShowOnboardingDialog(false);
 
-  let profileContentElement: JSX.Element | undefined;
-  if (appState.isLoading) {
-    profileContentElement = <LoadingView />;
+  // Helpers, info containers, etc.
+  let profileAltContent: JSX.Element | undefined;
+
+  if (appState.profile != null) {
+    // Greedily render the profile if exists, so explicitly set to undefined
+    profileAltContent = undefined;
+  } else if (appState.isLoading) {
+    profileAltContent = <LoadingView />;
   } else if (appState.isError) {
-    profileContentElement = <GenericErrorView />;
+    profileAltContent = <GenericErrorView />;
   } else if (appState.currentUserPubKey == null) {
-    profileContentElement = <ConnectWalletContainer />;
+    profileAltContent = <ConnectWalletContainer />;
   } else if (appState.nonExistentProfile) {
-    profileContentElement = (
+    profileAltContent = (
       <CreateProfileContainer showOnboardingDialog={openOnboardingDialog} />
-    );
-  } else if (appState.profile != null) {
-    profileContentElement = (
-      <div>
-        <pre>{JSON.stringify(appState.profile, null, 2)}</pre>
-      </div>
     );
   } else {
     logger.warn('Unhandled state');
-    profileContentElement = undefined;
+    profileAltContent = undefined;
+  }
+
+  let profileMainContent: JSX.Element | undefined;
+  if (appState.profile != null) {
+    profileMainContent = <ProfileContentSections profile={appState.profile} />;
   }
 
   logger.debug('Render');
@@ -51,11 +56,23 @@ const ProfilePage = () => {
         open={showOnboardingDialog}
         onClose={closeOnboardingDialog}
       />
-      {/*Profile content*/}
-      <PaperSectionContainer>{profileContentElement}</PaperSectionContainer>
+      {/*Profile Alt Content*/}
+      {profileAltContent && (
+        <PaperSectionContainer>{profileAltContent}</PaperSectionContainer>
+      )}
+
+      {/*Profile Main Content*/}
+      {profileMainContent}
 
       {/*Testing*/}
+      {/*test btns*/}
       <TestSolanaProfileSection />
+      {/*profile info*/}
+      {appState.profile && (
+        <div>
+          <pre>{JSON.stringify(appState.profile, null, 2)}</pre>
+        </div>
+      )}
     </AppPage>
   );
 };

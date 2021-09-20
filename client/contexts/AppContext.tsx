@@ -7,6 +7,7 @@ import {
   useSolanaProfileContext,
 } from './solana/SolanaProfileContext';
 import { getLogger } from '../../util/logger';
+import { solanaAppAuthorityKey } from '../../util/solana/solanaProgramUtils';
 
 type AppContextState = {
   /*
@@ -25,6 +26,7 @@ type AppContextState = {
   isError: boolean;
   currentUserPubKey?: string;
   profile?: Profile;
+  appAuthorityEnabled: boolean; // Whether our app is authorized to make profile changes
   nonExistentProfile: boolean; // Should prompt user to create a user
   /*
   Util fns
@@ -43,6 +45,11 @@ export const AppContextProvider: React.FC = ({ children }) => {
 
   const currentWalletPubKey = solanaProfileState.wallet.publicKey?.toString();
   const currentSessionPubKey = sessionState.session?.wallet?.pubKey;
+
+  const appAuthorityEnabled =
+    solanaProfileState.userProfile?.profile?.authorities[
+      solanaAppAuthorityKey.toString()
+    ] != null;
 
   // Reload session on public key change
   useEffect(() => {
@@ -84,6 +91,7 @@ export const AppContextProvider: React.FC = ({ children }) => {
     currentUserPubKey: currentWalletPubKey,
     profile: solanaProfileState.userProfile.profile,
     nonExistentProfile: solanaProfileState.userProfile.nonExistentProfile,
+    appAuthorityEnabled,
     isLoading,
     isError,
   };

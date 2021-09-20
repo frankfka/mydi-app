@@ -1,13 +1,30 @@
 import { ProfileNamespace } from '../util/profile/profileNamespaces';
+import {
+  ProfileCaptchaMetadata,
+  ProfileGeneralMetadata,
+} from './ProfileMetadata';
 
-export type ProfileDataRecord<T> = {
-  data: any;
-  lastUpdated: number;
-  authority: string;
+/**
+ * Represents all the data types for each namespace
+ */
+export type ProfileDataRecordTypes = {
+  general: ProfileGeneralMetadata;
+  captcha: ProfileCaptchaMetadata;
 };
 
 /**
- * TODO: better typing
+ * A wrapper for a profile data record
+ */
+export type ProfileDataRecord<
+  T extends ProfileDataRecordTypes[keyof ProfileDataRecordTypes]
+> = {
+  data: T;
+  lastUpdated: number;
+  authority: string;
+  metadataUri: string;
+};
+
+/**
  * Represents a decoded user profile
  */
 export type Profile = {
@@ -17,9 +34,12 @@ export type Profile = {
       lastAuthorized: number;
     };
   };
-  data: {
-    general: ProfileDataRecord<any>;
-  } & Partial<{
-    [namespace in ProfileNamespace]: ProfileDataRecord<any>;
-  }>;
+  data: Partial<{
+    [namespace in ProfileNamespace]: ProfileDataRecord<
+      ProfileDataRecordTypes[namespace]
+    >;
+  }> & {
+    // This is required
+    general: ProfileDataRecord<ProfileGeneralMetadata>;
+  };
 };
