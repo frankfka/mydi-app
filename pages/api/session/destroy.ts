@@ -1,8 +1,10 @@
 import type { NextApiResponse } from 'next';
-import EndpointResult from '../../types/EndpointResult';
-import withSession, { NextIronRequest } from '../../server/session/withSession';
+import EndpointResult from '../../../types/EndpointResult';
+import withSession, {
+  NextIronRequest,
+} from '../../../server/session/withSession';
 
-export type LogoutResponse = {};
+export type DestroySessionResponse = {};
 
 /**
  * Destroys the current session
@@ -11,7 +13,7 @@ export type LogoutResponse = {};
  */
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<EndpointResult<LogoutResponse>>
+  res: NextApiResponse<EndpointResult<DestroySessionResponse>>
 ) {
   await req.session.destroy();
   res.status(200).json({});

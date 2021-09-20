@@ -1,8 +1,8 @@
-export type UserSessionData = {
-  user?: BaseUserSessionData;
+export type AppSessionData = {
+  wallet?: CurrentWalletSessionData;
   // TODO: more info, like connected social accounts for current session
 };
 
-export type BaseUserSessionData = {
+export type CurrentWalletSessionData = {
   pubKey: string;
 };

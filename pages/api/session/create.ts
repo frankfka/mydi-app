@@ -1,10 +1,15 @@
 import type { NextApiResponse } from 'next';
-import EndpointResult from '../../types/EndpointResult';
-import withSession, { NextIronRequest } from '../../server/session/withSession';
-import { BaseUserSessionData } from '../../types/SessionTypes';
-import { SESSION_USER_KEY } from '../../util/session/sessionData';
+import EndpointResult from '../../../types/EndpointResult';
+import withSession, {
+  NextIronRequest,
+} from '../../../server/session/withSession';
+import {
+  AppSessionData,
+  CurrentWalletSessionData,
+} from '../../../types/SessionTypes';
+import { SESSION_USER_KEY } from '../../../util/session/sessionData';
 
-export type LoginResponse = {};
+export type CreateSessionResponse = AppSessionData;
 
 /**
  * Destroys the current session adn creates a new session given a wallet address.
@@ -14,7 +19,7 @@ export type LoginResponse = {};
  */
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<EndpointResult<LoginResponse>>
+  res: NextApiResponse<EndpointResult<CreateSessionResponse>>
 ) {
   const { pubKey } = req.body;
 
@@ -30,12 +35,18 @@ async function handler(
   }
 
   // Create a new session
-  await req.session.set<BaseUserSessionData>(SESSION_USER_KEY, {
+  await req.session.set<CurrentWalletSessionData>(SESSION_USER_KEY, {
     pubKey,
   });
   await req.session.save();
 
-  res.status(200).json({});
+  res.status(200).json({
+    data: {
+      wallet: {
+        pubKey: pubKey,
+      },
+    },
+  });
 }
 
 export default withSession(handler);

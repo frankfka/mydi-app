@@ -1,5 +1,5 @@
 type PostFetchParams = {
-  body: any;
+  body?: any;
   headers?: any;
 };
 
@@ -10,7 +10,7 @@ const createPostFetchInit = (params: PostFetchParams) => {
       'Content-Type': 'application/json',
       ...params.headers,
     },
-    body: JSON.stringify(params.body),
+    body: params.body != null ? JSON.stringify(params.body) : undefined,
   };
 };
 

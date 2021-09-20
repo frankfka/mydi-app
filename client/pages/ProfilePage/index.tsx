@@ -8,24 +8,24 @@ import CreateProfileContainer from './components/CreateProfileContainer';
 import GenericErrorView from '../../components/GenericErrorView';
 import LoadingView from '../../components/LoadingView';
 import PaperSectionContainer from '../../components/PaperSectionContainer';
-import useUser from '../../hooks/useUser';
+import useSession from '../../hooks/useSession';
 
 const ProfilePage = () => {
   const solanaProfileContext = useSolanaProfileContext();
-  const userSession = useUser();
+  const sessionState = useSession();
 
   // Reload session on public key change, this should eventually be in a AppContext that brings everything together
   useEffect(() => {
     // console.log('Pub key changed', solanaProfileContext.wallet.publicKey);
     if (solanaProfileContext.wallet.publicKey != null) {
       const pubKey = solanaProfileContext.wallet.publicKey.toString();
-      if (pubKey !== userSession.user?.user?.pubKey) {
-        userSession.login(pubKey);
+      if (pubKey !== sessionState.session?.wallet?.pubKey) {
+        sessionState.createSession(pubKey);
       }
-    } else if (userSession.user?.user != null) {
-      userSession.logout();
+    } else if (sessionState.session?.wallet != null) {
+      sessionState.destroySession();
     }
-  }, [solanaProfileContext.wallet.publicKey, userSession.login]);
+  }, [solanaProfileContext.wallet.publicKey, sessionState.createSession]);
 
   const [showOnboardingDialog, setShowOnboardingDialog] = useState(false);
   const openOnboardingDialog = () => setShowOnboardingDialog(true);
@@ -37,8 +37,8 @@ const ProfilePage = () => {
     ready: solanaProfileContext.wallet.ready,
   });
 
-  console.log('User state', {
-    pubKey: userSession.user?.user?.pubKey,
+  console.log('Session state', {
+    pubKey: sessionState.session?.wallet?.pubKey,
   });
 
   const isLoading = solanaProfileContext.loading;
