@@ -31,6 +31,7 @@ const CaptchaProfileSectionContent: React.FC<Props> = ({ dataRecord }) => {
   };
 
   const verificationContent = isVerified ? (
+    // Inline icon with verified text
     <Typography
       sx={{
         color: (theme) => theme.palette.success.main,
@@ -46,6 +47,7 @@ const CaptchaProfileSectionContent: React.FC<Props> = ({ dataRecord }) => {
       &nbsp;Verified
     </Typography>
   ) : (
+    // Verification button
     <CaptchaVerifyButton
       onCaptchaVerified={onCaptchaVerified}
       loading={isLoadingVerification}

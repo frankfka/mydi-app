@@ -16,6 +16,7 @@ const TestSolanaProfileSection = () => {
   const testDeleteDummyProfile = async () => {
     await solanaContext.deleteUserData('general');
     await solanaContext.deleteAppAuthority();
+    await solanaContext.deleteUserData('captcha');
   };
 
   return (

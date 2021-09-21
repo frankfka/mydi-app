@@ -10,6 +10,7 @@ import PaperSectionContainer from '../../components/PaperSectionContainer';
 import { useAppContext } from '../../contexts/AppContext';
 import { getLogger } from '../../../util/logger';
 import ProfileContentSections from './components/ProfileContentSections';
+import ProfileNoAppAuthorityAlert from './components/ProfileNoAppAuthorityAlert';
 
 const logger = getLogger('ProfilePage');
 
@@ -20,9 +21,20 @@ const ProfilePage = () => {
   const openOnboardingDialog = () => setShowOnboardingDialog(true);
   const closeOnboardingDialog = () => setShowOnboardingDialog(false);
 
+  // Alert for no app authority granted
+  let profileNoAppAuthorityContent: JSX.Element | undefined;
+  if (appState.profile != null && !appState.appAuthorityEnabled) {
+    profileNoAppAuthorityContent = (
+      <ProfileNoAppAuthorityAlert
+        sx={{
+          marginBottom: 2,
+        }}
+      />
+    );
+  }
+
   // Helpers, info containers, etc.
   let profileAltContent: JSX.Element | undefined;
-
   if (appState.profile != null) {
     // Greedily render the profile if exists, so explicitly set to undefined
     profileAltContent = undefined;
@@ -40,7 +52,13 @@ const ProfilePage = () => {
     logger.warn('Unhandled state');
     profileAltContent = undefined;
   }
+  // Wrap in section container
+  profileAltContent =
+    profileAltContent != null ? (
+      <PaperSectionContainer>{profileAltContent}</PaperSectionContainer>
+    ) : undefined;
 
+  // Main content to display profiles
   let profileMainContent: JSX.Element | undefined;
   if (appState.profile != null) {
     profileMainContent = <ProfileContentSections profile={appState.profile} />;
@@ -57,9 +75,10 @@ const ProfilePage = () => {
         onClose={closeOnboardingDialog}
       />
       {/*Profile Alt Content*/}
-      {profileAltContent && (
-        <PaperSectionContainer>{profileAltContent}</PaperSectionContainer>
-      )}
+      {profileAltContent}
+
+      {/*No authority alert*/}
+      {profileNoAppAuthorityContent}
 
       {/*Profile Main Content*/}
       {profileMainContent}

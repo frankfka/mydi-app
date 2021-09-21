@@ -49,7 +49,7 @@ export const AppContextProvider: React.FC = ({ children }) => {
   const appAuthorityEnabled =
     solanaProfileState.userProfile?.profile?.authorities[
       solanaAppAuthorityKey.toString()
-    ] != null;
+    ]?.scope === 'all'; // We require "all" scope
 
   // Reload session on public key change
   useEffect(() => {
