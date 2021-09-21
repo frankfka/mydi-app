@@ -6,7 +6,6 @@ import {
   getCreateSolanaProfileDataIx,
   getDeleteSolanaProfileAuthorityIx,
   getDeleteSolanaProfileDataIx,
-  getUpdateSolanaProfileDataIx,
 } from '../../../util/solana/solanaProgramInstructions';
 import { solanaAppAuthorityKey } from '../../../util/solana/solanaProgramUtils';
 import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
@@ -18,6 +17,7 @@ import {
   getProfileData,
 } from '../../../util/solana/solanaProgramQueries';
 import { getLogger } from '../../../util/logger';
+import { getUpsertUserDataTxn } from '../../../util/solana/solanaProgramProfileUtils';
 
 const logger = getLogger('solanaProfileContextUtils');
 
@@ -25,7 +25,7 @@ export type CreateUserProfileParams = ProfileGeneralMetadata & {
   createAppAuthority: boolean; // Whether to add instruction to also create an authorization for our app
 };
 
-export type UpsertUserDataParams = {
+export type ClientUpsertUserDataParams = {
   data: any;
   namespace: ProfileNamespace;
 };
@@ -93,39 +93,20 @@ export const upsertUserData = async (
   connection: Connection,
   wallet: WalletContextState,
   profileProgram: Program,
-  params: UpsertUserDataParams
+  params: ClientUpsertUserDataParams
 ): Promise<string> => {
   if (wallet.publicKey == null) {
     throw Error('Wallet public key not defined');
   }
 
-  // Fetch existing data
-  const existingData = await getProfileData(profileProgram, {
-    userKey: wallet.publicKey,
-    namespace: params.namespace,
-  });
-
   // Upload new metadata
   const metadataUri = addIpfsPrefix(await callStoreMetadataApi(params.data));
 
-  const txn = new Transaction();
-  if (existingData != null) {
-    // Use update
-    const updateDataIx = await getUpdateSolanaProfileDataIx(profileProgram, {
-      metadataUri: metadataUri,
-      userKey: wallet.publicKey,
-      namespace: params.namespace,
-    });
-    txn.add(updateDataIx);
-  } else {
-    // Use create
-    const createDataIx = await getCreateSolanaProfileDataIx(profileProgram, {
-      metadataUri: metadataUri,
-      userKey: wallet.publicKey,
-      namespace: params.namespace,
-    });
-    txn.add(createDataIx);
-  }
+  const txn = await getUpsertUserDataTxn(profileProgram, {
+    metadataUri,
+    namespace: params.namespace,
+    userKey: wallet.publicKey,
+  });
 
   return wallet.sendTransaction(txn, connection);
 };

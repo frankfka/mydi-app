@@ -39,11 +39,11 @@ export const getProfileData = async (
 
     return fetchedData as unknown as SolanaProfileData;
   } catch (err) {
-    logger.warn('Error getting profile data', err);
     if (isAccountNotExistsError(err)) {
       return;
     }
     // Bubble up this error
+    logger.warn('Error getting profile data', err);
     throw err;
   }
 };

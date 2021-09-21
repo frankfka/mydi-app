@@ -85,11 +85,8 @@ Data
  * Util fn to get an authority record from params, which is checked when authority != user
  * @param params
  */
-const getAuthorityRecordFromParams = async (
-  params: Pick<
-    CreateProfileDataParams,
-    'authorityKey' | 'userKey' | 'namespace'
-  >
+const getAllScopedAuthorityRecordFromParams = async (
+  params: Pick<CreateProfileDataParams, 'authorityKey' | 'userKey'>
 ): Promise<PublicKey> => {
   // Authority is checked if the user is not the authority
   let authorityRecord = params.userKey;
@@ -98,7 +95,7 @@ const getAuthorityRecordFromParams = async (
     [authorityRecord] = await getAuthorityProgramAddress(
       params.userKey,
       params.authorityKey,
-      params.namespace
+      'all' // App authority should be the only one using this fn, which should have all scope
     );
   }
 
@@ -128,7 +125,7 @@ export const getCreateSolanaProfileDataIx = async (
         dataRecord: dataPda,
         user: params.userKey,
         authority: params.authorityKey ?? params.userKey,
-        authorityRecord: await getAuthorityRecordFromParams(params),
+        authorityRecord: await getAllScopedAuthorityRecordFromParams(params),
         systemProgram: SystemProgram.programId,
       },
     }
@@ -158,7 +155,7 @@ export const getUpdateSolanaProfileDataIx = async (
         dataRecord: dataPda,
         user: params.userKey,
         authority: params.authorityKey ?? params.userKey,
-        authorityRecord: await getAuthorityRecordFromParams(params),
+        authorityRecord: await getAllScopedAuthorityRecordFromParams(params),
       },
     }
   );
@@ -183,7 +180,7 @@ export const getDeleteSolanaProfileDataIx = async (
       dataRecord: dataPda,
       user: params.userKey,
       authority: params.authorityKey ?? params.userKey,
-      authorityRecord: await getAuthorityRecordFromParams(params),
+      authorityRecord: await getAllScopedAuthorityRecordFromParams(params),
     },
   });
 };

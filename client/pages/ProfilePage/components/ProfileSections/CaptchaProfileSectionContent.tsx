@@ -26,6 +26,8 @@ const CaptchaProfileSectionContent: React.FC<Props> = ({ dataRecord }) => {
     setIsLoadingVerification(true);
     await callVerifyCaptchaApi(captchaToken);
     setIsLoadingVerification(false);
+    // Now reload profile
+    appContext.solanaProfileState.userProfile.mutate();
   };
 
   const verificationContent = isVerified ? (

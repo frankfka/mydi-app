@@ -1,7 +1,10 @@
 import useSWR from 'swr';
-import { Profile } from '../../types/Profile';
+import { Profile, ProfileDataRecordTypes } from '../../types/Profile';
 import { PublicKey } from '@solana/web3.js';
-import { profileNamespaces } from '../../util/profile/profileNamespaces';
+import {
+  ProfileNamespace,
+  profileNamespaces,
+} from '../../util/profile/profileNamespaces';
 import { pull } from 'lodash';
 import {
   getProfileAuthority,
@@ -13,7 +16,6 @@ import { getDataFromCid } from '../../util/ipfs/getDataFromCid';
 import { useMemo } from 'react';
 import { solanaAppAuthorityKey } from '../../util/solana/solanaProgramUtils';
 import { getLogger } from '../../util/logger';
-import { ProfileGeneralMetadata } from '../../types/ProfileMetadata';
 
 const logger = getLogger('useGetSolanaWalletProfile');
 
@@ -30,43 +32,67 @@ export type GetSolanaWalletProfileParams = {
   program: Program;
 };
 
+const namespaceFetcher = async <T extends ProfileNamespace>(
+  program: Program,
+  userKey: PublicKey,
+  namespace: T,
+  profile: Profile
+): Promise<void> => {
+  // Get data from blockchain
+  const namespaceData = await getProfileData(program, {
+    namespace,
+    userKey: userKey,
+  });
+
+  if (namespaceData == null) {
+    logger.debug(
+      'No data found for namespace',
+      namespace,
+      'with user',
+      userKey.toString()
+    );
+    return;
+  }
+
+  // Get metadata
+  let metadata: ProfileDataRecordTypes[T] = {};
+  if (namespaceData.metadataUri) {
+    metadata = (await getDataFromCid(namespaceData.metadataUri)) ?? {};
+  }
+
+  profile.data[namespace] = {
+    data: metadata,
+    lastUpdated: namespaceData.lastUpdated.toNumber(),
+    authority: namespaceData.authority.toString(),
+    metadataUri: namespaceData.metadataUri,
+  };
+};
+
 const solanaWalletProfileFetcher = async (
   program: Program,
   userKey: PublicKey
 ): Promise<Profile | null> => {
   logger.debug('Fetching profile for user', userKey.toString());
 
-  // To determine if a profile exists, we query the 'general' namespace
-  const generalNamespaceData = await getProfileData(program, {
-    namespace: 'general',
-    userKey: userKey,
-  });
+  const profile: Profile = {
+    authorities: {},
+    data: {},
+  } as unknown as Profile;
 
-  // No profile exists
-  if (generalNamespaceData == null) {
+  // Fetch the general namespace first
+  await namespaceFetcher(program, userKey, 'general', profile);
+
+  if (profile.data.general == null) {
     logger.debug('No general namespace exists for user');
     return null;
   }
 
-  // Now start to fetch other namespaces and add to baseProfile
-  const generalProfileMetadata = await getDataFromCid<ProfileGeneralMetadata>(
-    generalNamespaceData.metadataUri
-  );
-
-  const profile: Profile = {
-    authorities: {},
-    data: {
-      general: {
-        data: generalProfileMetadata ?? {},
-        lastUpdated: generalNamespaceData.lastUpdated.toNumber(),
-        authority: generalNamespaceData.authority.toString(),
-        metadataUri: generalNamespaceData.metadataUri,
-      },
-    },
-  };
-
-  // TODO Merge data from other namespaces (should do this in parallel)
+  // Merge data from other namespaces, doing this in parallel
   const otherNamespaces = pull(Object.values(profileNamespaces), 'general');
+  const namespaceDataPromises = otherNamespaces.map((namespace) => {
+    return namespaceFetcher(program, userKey, namespace, profile);
+  });
+  await Promise.all(namespaceDataPromises);
 
   // Now get authorities (only our app right now)
   const appAuthority = await getProfileAuthority(program, {

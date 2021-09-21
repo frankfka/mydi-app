@@ -4,9 +4,11 @@ import EndpointResult from '../../types/EndpointResult';
 import { CurrentWalletSessionData } from '../../types/SessionTypes';
 import { SESSION_WALLET_KEY } from '../../util/session/sessionData';
 import executeAsyncForResult from '../../util/executeAsyncForResult';
-import { verifyCaptchaToken } from '../../server/handlers/verifyCaptchaHandlerUtils';
-
-export type VerifyCaptchaResponse = {};
+import {
+  verifyCaptchaHandler,
+  VerifyCaptchaResponse,
+} from '../../server/handlers/verifyCaptchaHandler';
+import resultToEndpointResult from '../../util/resultToEndpointResult';
 
 /**
  * Fetches the current session data
@@ -38,18 +40,11 @@ async function handler(
   }
 
   // Verification logic
-  const result = executeAsyncForResult(async () => {
-    const verificationResult = await verifyCaptchaToken(captchaToken);
-    if (!verificationResult.success) {
-      throw Error('Given captcha token is not verified');
-    }
-
-    console.log('Verification result', verificationResult);
+  const result = await executeAsyncForResult(async () => {
+    return verifyCaptchaHandler(walletSessionData.pubKey, captchaToken);
   });
 
-  res.status(200).json({
-    data: {},
-  });
+  res.status(200).json(resultToEndpointResult(result));
 }
 
 export default withSession(handler);

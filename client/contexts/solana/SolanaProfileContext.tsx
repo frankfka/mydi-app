@@ -14,12 +14,12 @@ import {
 import { ProfileGeneralMetadata } from '../../../types/ProfileMetadata';
 import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
 import {
+  ClientUpsertUserDataParams,
   createAppAuthority,
   createUserProfile,
   deleteAppAuthority,
   deleteUserData,
   upsertUserData,
-  UpsertUserDataParams,
 } from './solanaProfileContextUtils';
 
 type CreateUserProfileParams = ProfileGeneralMetadata & {
@@ -34,9 +34,9 @@ export type SolanaProfileContextState = {
   // Loading/err
   isLoading: boolean;
   isError: boolean;
-  // Transaction utils
+  // Utils
   createUserProfile(params: CreateUserProfileParams): Promise<string>;
-  upsertUserData(params: UpsertUserDataParams): Promise<string>; // For a specific namespace
+  upsertUserData(params: ClientUpsertUserDataParams): Promise<string>; // For a specific namespace
   deleteUserData(namespace: ProfileNamespace): Promise<string | undefined>; // Undefined txn ID if there's no data to delete
   createAppAuthority(): Promise<string>; // Requests authorization for our app with "all" scope
   deleteAppAuthority(): Promise<string | undefined>;
@@ -96,7 +96,7 @@ export const SolanaProfileContextProvider: React.FC = ({ children }) => {
         return createUserProfile(connection, wallet, program, params);
       });
     },
-    async upsertUserData(params: UpsertUserDataParams) {
+    async upsertUserData(params: ClientUpsertUserDataParams) {
       return executeOperation((program) => {
         return upsertUserData(connection, wallet, program, params);
       });

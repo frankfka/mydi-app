@@ -8,4 +8,4 @@ export type ProfileGeneralMetadata = {
   imageUri?: string;
 };
 
-export type ProfileCaptchaMetadata = never;
+export type ProfileCaptchaMetadata = {};
