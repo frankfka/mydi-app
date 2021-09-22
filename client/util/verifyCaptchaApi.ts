@@ -1,4 +1,6 @@
 import createPostFetchInit from '../../util/createPostFetchInit';
+import EndpointResult from '../../types/EndpointResult';
+import { VerifyCaptchaResponse } from '../../server/handlers/verifyCaptchaHandler';
 
 /**
  * Calls our backend API to verify a given cpatcha code and add it to the session profile
@@ -6,7 +8,7 @@ import createPostFetchInit from '../../util/createPostFetchInit';
  */
 export const callVerifyCaptchaApi = async (
   captchaToken: string
-): Promise<void> => {
+): Promise<string> => {
   const resp = await fetch(
     '/api/verify-captcha',
     createPostFetchInit({
@@ -16,5 +18,10 @@ export const callVerifyCaptchaApi = async (
     })
   );
 
-  console.log(await resp.json());
+  const respJson: EndpointResult<VerifyCaptchaResponse> = await resp.json();
+  if (respJson.data?.transactionId == null) {
+    throw Error('No transaction ID from upsert social data API');
+  }
+
+  return respJson.data.transactionId;
 };

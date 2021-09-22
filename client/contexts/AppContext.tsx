@@ -60,8 +60,10 @@ export const AppContextProvider: React.FC = ({ children }) => {
           await sessionState.createSession(currentWalletPubKey);
         }
       } else if (currentSessionPubKey != null) {
-        // Wallet disconnected, destroy current session
-        await sessionState.destroySession();
+        // Wallet is disconnected BUT there is a pubkey in session
+        // Normally we should destroy the session, but to support oAuth,
+        // we "cache" the latest session
+        logger.debug('Wallet not connected, leaving session pubKey');
       }
     };
 

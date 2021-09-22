@@ -25,12 +25,13 @@ const SolanaWalletContextProvider: FC = ({ children }) => {
     []
   );
 
-  // TODO: Passing autoconnect here seems to put us in an infinite loop, can maybe pass autoConnect for prod builds
-  // Also - Can have custom dialog props passed in here
-  // https://github.com/solana-labs/wallet-adapter/blob/f99da7e088cf95643cf983ebac133cb9f7c4e46a/packages/ui/material-ui/src/WalletDialog.tsx#L85
+  // Passing autoconnect here seems to put us in an infinite loop, can maybe pass autoConnect for prod builds
   return (
     <ConnectionProvider endpoint={solanaNetworkEndpoint}>
-      <WalletProvider wallets={wallets}>
+      <WalletProvider
+        wallets={wallets}
+        autoConnect={process.env.NODE_ENV === 'production'}
+      >
         <WalletModalProvider>{children}</WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

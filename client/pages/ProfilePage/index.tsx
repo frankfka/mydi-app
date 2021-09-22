@@ -4,13 +4,14 @@ import ConnectWalletContainer from './components/ConnectWalletContainer';
 import TestSolanaProfileSection from './components/TestSolanaProfileSection';
 import ProfileOnboardingDialog from './components/ProfileOnboardingDialog';
 import CreateProfileContainer from './components/CreateProfileContainer';
-import GenericErrorView from '../../components/GenericErrorView';
+import ErrorInfoView from '../../components/ErrorInfoView';
 import LoadingView from '../../components/LoadingView';
 import PaperSectionContainer from '../../components/PaperSectionContainer';
 import { useAppContext } from '../../contexts/AppContext';
 import { getLogger } from '../../../util/logger';
 import ProfileContentSections from './components/ProfileContentSections';
 import ProfileNoAppAuthorityAlert from './components/ProfileNoAppAuthorityAlert';
+import { Button } from '@mui/material';
 
 const logger = getLogger('ProfilePage');
 
@@ -41,7 +42,7 @@ const ProfilePage = () => {
   } else if (appState.isLoading) {
     profileAltContent = <LoadingView />;
   } else if (appState.isError) {
-    profileAltContent = <GenericErrorView />;
+    profileAltContent = <ErrorInfoView />;
   } else if (appState.currentUserPubKey == null) {
     profileAltContent = <ConnectWalletContainer />;
   } else if (appState.nonExistentProfile) {
@@ -66,8 +67,13 @@ const ProfilePage = () => {
 
   logger.debug('Render');
 
+  const testBtnClick = () => {
+    window.open('/profile/oauth', '_blank');
+  };
+
   return (
     <AppPage>
+      <Button onClick={testBtnClick}>Test</Button>
       {/*Onboarding dialog*/}
       <ProfileOnboardingDialog
         onDoneOnboardingClicked={closeOnboardingDialog}

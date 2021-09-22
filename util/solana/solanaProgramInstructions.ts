@@ -181,6 +181,7 @@ export const getDeleteSolanaProfileDataIx = async (
       user: params.userKey,
       authority: params.authorityKey ?? params.userKey,
       authorityRecord: await getAllScopedAuthorityRecordFromParams(params),
+      systemProgram: SystemProgram.programId,
     },
   });
 };

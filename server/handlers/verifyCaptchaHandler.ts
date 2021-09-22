@@ -1,7 +1,7 @@
 import { getLogger } from '../../util/logger';
 import { getProfileAuthority } from '../../util/solana/solanaProgramQueries';
 import { solanaAppAuthorityKey } from '../../util/solana/solanaProgramUtils';
-import { serverSolanaProgram } from '../services/serverSolanaClient';
+import { serverSolanaProgram } from '../util/serverSolanaClient';
 import { PublicKey } from '@solana/web3.js';
 import { getUpsertUserDataTxn } from '../../util/solana/solanaProgramProfileUtils';
 
@@ -62,8 +62,6 @@ export const verifyCaptchaHandler = async (
   if (!appAuthority) {
     throw Error('App does not have authority to write to profile');
   }
-
-  console.log(solanaAppAuthorityKey.toString());
 
   // Now verify the token
   const verificationResult = await verifyCaptchaToken(captchaToken);
