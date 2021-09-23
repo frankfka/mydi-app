@@ -146,7 +146,7 @@ export const getUpdateSolanaProfileDataIx = async (
     params.namespace
   );
 
-  return program.instruction.createDataRecord(
+  return program.instruction.updateDataRecord(
     params.metadataUri,
     params.namespace,
     dataBump,
@@ -156,6 +156,7 @@ export const getUpdateSolanaProfileDataIx = async (
         user: params.userKey,
         authority: params.authorityKey ?? params.userKey,
         authorityRecord: await getAllScopedAuthorityRecordFromParams(params),
+        systemProgram: SystemProgram.programId,
       },
     }
   );

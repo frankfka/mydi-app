@@ -1,29 +1,28 @@
 import type { NextApiResponse } from 'next';
-import { uploadDataToIpfs } from '../../util/ipfs/uploadDataToIpfs';
 import EndpointResult from '../../types/EndpointResult';
 import { CurrentWalletSessionData } from '../../types/SessionTypes';
 import { SESSION_WALLET_KEY } from '../../util/session/sessionData';
 import withSession, { NextIronRequest } from '../../server/session/withSession';
 import executeAsyncForResult from '../../util/executeAsyncForResult';
 import resultToEndpointResult from '../../util/resultToEndpointResult';
+import { getDataFromCid } from '../../util/ipfs/getDataFromCid';
 
 type ReqBody = {
-  data: any;
-};
-
-export type StoreMetadataResponse = {
   cid: string;
 };
 
+export type GetMetadataResponse = any;
+
 /**
- * Stores metadata in body.data and returns the CID
+ * Fetches JSON metadata from a given CID
  * @param req
  * @param res
  */
 async function handler(
   req: NextIronRequest,
-  res: NextApiResponse<EndpointResult<StoreMetadataResponse>>
+  res: NextApiResponse<EndpointResult<GetMetadataResponse>>
 ) {
+  // Guard API call to session-only
   const walletSessionData = await req.session.get<CurrentWalletSessionData>(
     SESSION_WALLET_KEY
   );
@@ -35,21 +34,17 @@ async function handler(
     return;
   }
 
-  if (req.body.data == null) {
+  if (req.body.cid == null || typeof req.body.cid !== 'string') {
     res.status(400).json({
-      error: 'Data property not specified',
+      error: 'Invalid CID property',
     });
     return;
   }
   const reqBody: ReqBody = req.body;
 
-  const result = await executeAsyncForResult<StoreMetadataResponse>(
-    async () => {
-      return {
-        cid: await uploadDataToIpfs(reqBody.data),
-      };
-    }
-  );
+  const result = await executeAsyncForResult<GetMetadataResponse>(async () => {
+    return await getDataFromCid(reqBody.cid);
+  });
 
   res.status(200).json(resultToEndpointResult(result));
 }

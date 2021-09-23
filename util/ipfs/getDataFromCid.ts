@@ -1,28 +1,40 @@
-import { getCid, getCidGatewayUrl, isIpfsCid } from './cidUtils';
+import { getCid } from './cidUtils';
 import cache from 'memory-cache';
+import { web3StorageClient } from './web3Storage';
+import { getLogger } from '../logger';
+
+const logger = getLogger('getDataFromCid');
 
 /**
- * Returns data from given CID, checking the cache first
- *
- * @param cid
+ * Returns JSON data from IPFS. Accessible ONLY on server side
+ * @param cid: the CID of a singular JSON file to be read as text
  */
-export const getDataFromCid = async <TData>(
-  cid: string
-): Promise<TData | undefined> => {
-  if (!isIpfsCid(cid)) {
-    console.log('Not a CID: ', cid);
+export const getDataFromCid = async (cid: string): Promise<any | undefined> => {
+  const cleanedCid = getCid(cid);
+  const fetchResponse = await web3StorageClient.get(cleanedCid);
+
+  if (fetchResponse == null || !fetchResponse.ok) {
+    logger.warn(
+      'Error response from web3 storage client',
+      fetchResponse?.status,
+      fetchResponse?.statusText
+    );
     return;
   }
 
-  const cleanedCid = getCid(cid);
-  const cachedData = cache.get(cleanedCid);
-  if (cachedData) {
-    return cachedData;
+  const fetchedFiles = await fetchResponse.files();
+
+  if (fetchedFiles.length !== 1) {
+    logger.warn(
+      'Incorrect number of fetched files from web3 response',
+      fetchedFiles.length
+    );
+    return;
   }
 
-  // TODO: use swr here in wrapper. Also need a timeout: https://dmitripavlutin.com/timeout-fetch-request/
-  const resp = await fetch(getCidGatewayUrl(cleanedCid));
-  const fetchedData = resp.json();
+  const fetchedText = await fetchedFiles[0].text();
+  const fetchedData = JSON.parse(fetchedText);
+
   cache.put(cleanedCid, fetchedData);
 
   return fetchedData;

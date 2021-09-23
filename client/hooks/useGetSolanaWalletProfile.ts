@@ -12,10 +12,10 @@ import {
 } from '../../util/solana/solanaProgramQueries';
 import { Program } from '@project-serum/anchor';
 import { KeyedMutator } from 'swr/dist/types';
-import { getDataFromCid } from '../../util/ipfs/getDataFromCid';
 import { useMemo } from 'react';
 import { solanaAppAuthorityKey } from '../../util/solana/solanaProgramUtils';
 import { getLogger } from '../../util/logger';
+import { callGetMetadataApi } from '../util/getMetadataApi';
 
 const logger = getLogger('useGetSolanaWalletProfile');
 
@@ -57,7 +57,7 @@ const namespaceFetcher = async <TMetadata extends ProfileDataRecordTypes>(
   // Get metadata
   let metadata: ProfileDataRecordTypes = {};
   if (namespaceData.metadataUri) {
-    metadata = (await getDataFromCid(namespaceData.metadataUri)) ?? {};
+    metadata = (await callGetMetadataApi(namespaceData.metadataUri)) ?? {};
   }
 
   profile.data[namespace] = {

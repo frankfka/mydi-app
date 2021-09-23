@@ -1,16 +1,8 @@
-import { File, Web3Storage } from 'web3.storage';
+import { File } from 'web3.storage';
 import { nanoid } from 'nanoid';
 import cache from 'memory-cache';
 import { getCid } from './cidUtils';
-
-const web3StorageToken = process.env.WEB3_STORAGE_TOKEN;
-if (!web3StorageToken) {
-  throw Error('Web3 storage token not defined');
-}
-
-const web3StorageClient = new Web3Storage({
-  token: web3StorageToken,
-});
+import { web3StorageClient } from './web3Storage';
 
 /**
  * Uploads data as JSON to IPFS. Accessible ONLY on server side
