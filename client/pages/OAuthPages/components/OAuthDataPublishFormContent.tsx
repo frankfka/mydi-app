@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { OAuthRedirectResult } from '@magic-ext/oauth';
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -25,6 +26,7 @@ import { getLogger } from '../../../../util/logger';
 
 type Props = {
   oAuthResult: OAuthRedirectResult;
+  onPublishSuccess(): void;
 };
 
 const logger = getLogger('OAuthDataPublishFormContent');
@@ -33,16 +35,18 @@ const logger = getLogger('OAuthDataPublishFormContent');
  * After the redirect, after valid data has been retrieved, we render
  * this form to allow users to choose the data they want to publish
  */
-const OAuthDataPublishFormContent: React.FC<Props> = ({ oAuthResult }) => {
+const OAuthDataPublishFormContent: React.FC<Props> = ({
+  oAuthResult,
+  onPublishSuccess,
+}) => {
   const [isPublishing, setIsPublishing] = useState(false);
-  // TODO deal with these states
-  const [publishSuccess, setPublishSuccess] = useState(false); // TODO maybe bring this out?
   const [publishError, setPublishError] = useState(false);
 
   const socialLoginData = getSocialLoginData(oAuthResult);
   const provider: SupportedOAuthType = oAuthResult.oauth
     .provider as SupportedOAuthType;
 
+  // TODO: Consider removing keys that don't have data
   const allDataKeys = Object.keys(socialLoginData) as SocialLoginDataKey[];
   const [dataKeysToSave, setDataKeysToSave] =
     useState<SocialLoginDataKey[]>(allDataKeys);
@@ -54,16 +58,22 @@ const OAuthDataPublishFormContent: React.FC<Props> = ({ oAuthResult }) => {
         provider,
         pick(socialLoginData, dataKeysToSave)
       );
-      setPublishSuccess(true);
+      setIsPublishing(false);
+      onPublishSuccess();
     } catch (err) {
+      setIsPublishing(false);
       setPublishError(true);
       logger.error('Error calling upsert social data', err);
     }
-    setIsPublishing(false);
   };
 
   return (
     <SpacingContainer>
+      {publishError && (
+        <Alert severity="error" onClose={() => setPublishError(false)}>
+          Something went wrong. Please try again.
+        </Alert>
+      )}
       <div>
         <Typography variant="h4">
           {oAuthTypeToDisplayName[provider]} Data
@@ -72,7 +82,7 @@ const OAuthDataPublishFormContent: React.FC<Props> = ({ oAuthResult }) => {
           Select the items that you would like to publish to your profile.
         </Typography>
       </div>
-      {/*Editable ist of retrieved data items*/}
+      {/*Editable list of retrieved data items*/}
       <List>
         {allDataKeys.map((dataKey, index) => {
           const displayableKeyName = socialLoginDataToDisplayName[dataKey];
@@ -101,7 +111,7 @@ const OAuthDataPublishFormContent: React.FC<Props> = ({ oAuthResult }) => {
                   primary={
                     <>
                       <strong>{displayableKeyName}:</strong>{' '}
-                      {dataValue ?? 'None'}
+                      {dataValue ?? <em>None</em>}
                     </>
                   }
                 />

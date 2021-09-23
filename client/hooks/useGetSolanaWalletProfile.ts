@@ -32,10 +32,10 @@ export type GetSolanaWalletProfileParams = {
   program: Program;
 };
 
-const namespaceFetcher = async <T extends ProfileNamespace>(
+const namespaceFetcher = async <TMetadata extends ProfileDataRecordTypes>(
   program: Program,
   userKey: PublicKey,
-  namespace: T,
+  namespace: ProfileNamespace,
   profile: Profile
 ): Promise<void> => {
   // Get data from blockchain
@@ -55,7 +55,7 @@ const namespaceFetcher = async <T extends ProfileNamespace>(
   }
 
   // Get metadata
-  let metadata: ProfileDataRecordTypes[T] = {};
+  let metadata: ProfileDataRecordTypes = {};
   if (namespaceData.metadataUri) {
     metadata = (await getDataFromCid(namespaceData.metadataUri)) ?? {};
   }

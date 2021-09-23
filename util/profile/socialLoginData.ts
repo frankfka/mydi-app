@@ -5,7 +5,7 @@ import { OpenIDConnectUserInfo } from '@magic-ext/oauth';
  */
 export type SocialLoginData = Pick<
   OpenIDConnectUserInfo,
-  'sub' | 'email' | 'preferredUsername'
+  'sub' | 'email' | 'preferredUsername' | 'profile' | 'name' | 'nickname'
 >;
 
 export type SocialLoginDataKey = keyof SocialLoginData;

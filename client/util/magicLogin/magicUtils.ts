@@ -14,6 +14,9 @@ export const getSocialLoginData = (
     sub: userInfo.sub,
     preferredUsername: userInfo.preferredUsername,
     email: userInfo.email,
+    profile: userInfo.profile,
+    name: userInfo.name,
+    nickname: userInfo.nickname,
   };
 };
 
@@ -27,6 +30,9 @@ export const socialLoginDataToDisplayName: Record<
   sub: 'Provider ID',
   email: 'Email',
   preferredUsername: 'Username',
+  profile: 'Profile',
+  name: 'Name',
+  nickname: 'Nickname',
 };
 
 /**
@@ -34,5 +40,5 @@ export const socialLoginDataToDisplayName: Record<
  */
 export const oAuthTypeToDisplayName: Record<SupportedOAuthType, string> = {
   discord: 'Discord',
-  github: 'github',
+  github: 'Github',
 };

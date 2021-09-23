@@ -5,6 +5,8 @@ import PaperSectionContainer from '../../../components/PaperSectionContainer';
 import { Typography } from '@mui/material';
 import SpacingContainer from '../../../components/SpacingContainer';
 import CaptchaProfileSectionContent from './ProfileSections/CaptchaProfileSectionContent';
+import SocialProfileSectionContent from './ProfileSections/SocialProfileSectionContent';
+import { pick } from 'lodash';
 
 type Props = {
   profile: Profile;
@@ -40,6 +42,11 @@ const ProfileContentSections: React.FC<Props> = ({ profile }) => {
       </ProfileSection>
       <ProfileSection>
         <CaptchaProfileSectionContent dataRecord={profile.data.captcha} />
+      </ProfileSection>
+      <ProfileSection title="Social">
+        <SocialProfileSectionContent
+          dataRecords={pick(profile.data, 'social.discord', 'social.github')}
+        />
       </ProfileSection>
     </SpacingContainer>
   );

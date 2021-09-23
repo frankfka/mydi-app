@@ -1,3 +1,5 @@
+import { SocialLoginData } from '../util/profile/socialLoginData';
+
 /*
 Expected metadata structures for different namespaces
  */
@@ -9,3 +11,5 @@ export type ProfileGeneralMetadata = {
 };
 
 export type ProfileCaptchaMetadata = {};
+
+export type ProfileSocialAccountMetadata = SocialLoginData;
