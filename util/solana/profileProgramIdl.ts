@@ -53,7 +53,7 @@ export const profileProgramIdl: Idl = {
       accounts: [
         {
           name: 'dataRecord',
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {

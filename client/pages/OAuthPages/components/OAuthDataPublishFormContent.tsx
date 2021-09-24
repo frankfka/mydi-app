@@ -46,10 +46,11 @@ const OAuthDataPublishFormContent: React.FC<Props> = ({
   const provider: SupportedOAuthType = oAuthResult.oauth
     .provider as SupportedOAuthType;
 
-  // TODO: Consider removing keys that don't have data
   const allDataKeys = Object.keys(socialLoginData) as SocialLoginDataKey[];
-  const [dataKeysToSave, setDataKeysToSave] =
-    useState<SocialLoginDataKey[]>(allDataKeys);
+  // Don't save keys that do not have data
+  const [dataKeysToSave, setDataKeysToSave] = useState<SocialLoginDataKey[]>(
+    allDataKeys.filter((key) => socialLoginData[key] != null)
+  );
 
   const onPublishClicked = async () => {
     setIsPublishing(true);
@@ -98,12 +99,14 @@ const OAuthDataPublishFormContent: React.FC<Props> = ({
           return (
             <div key={dataKey}>
               <ListItem
-                sx={{ padding: 2 }}
+                sx={{ padding: 2, paddingLeft: 0 }}
                 secondaryAction={
                   <Checkbox
                     edge="end"
                     onChange={(e, checked) => onCheckboxChange(checked)}
                     checked={dataKeysToSave.includes(dataKey)}
+                    // Disable if there's no data
+                    disabled={socialLoginData[dataKey] == null}
                   />
                 }
               >

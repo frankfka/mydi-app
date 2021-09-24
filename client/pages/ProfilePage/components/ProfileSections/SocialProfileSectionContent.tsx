@@ -1,32 +1,25 @@
 import React from 'react';
 import { Divider, List } from '@mui/material';
 import { ProfileSocialDataRecords } from '../../../../../types/Profile';
-import {
-  ProfileSocialNamespace,
-  profileSocialNamespaces,
-} from '../../../../../util/profile/profileNamespaces';
+import { profileSocialNamespaces } from '../../../../../util/profile/profileNamespaces';
 import SocialProfileSectionRow from './SocialProfileSectionRow';
 
 type Props = {
   dataRecords: ProfileSocialDataRecords;
 };
 
-const socialNamespaceToNetworkName: Record<ProfileSocialNamespace, string> = {
-  'social.github': 'github',
-  'social.discord': 'discord',
-};
-
 const SocialProfileSectionContent: React.FC<Props> = ({ dataRecords }) => {
+  const namespaceData = Object.values(profileSocialNamespaces);
   return (
     <List>
-      {Object.values(profileSocialNamespaces).map((namespace) => {
+      {namespaceData.map((namespace, index) => {
         return (
           <div key={namespace}>
             <SocialProfileSectionRow
               namespace={namespace}
               dataRecord={dataRecords[namespace]}
             />
-            <Divider />
+            {index < namespaceData.length - 1 && <Divider />}
           </div>
         );
       })}
