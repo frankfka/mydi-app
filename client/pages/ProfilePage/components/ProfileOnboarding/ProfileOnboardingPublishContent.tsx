@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import SpacingContainer from '../../../../components/SpacingContainer';
-import { Alert, Button, CircularProgress, Typography } from '@mui/material';
+import { Alert, Button, Typography } from '@mui/material';
 import { useSolanaProfileContext } from '../../../../contexts/solana/SolanaProfileContext';
 import { OnboardingProfileFormValues } from './ProfileOnboardingProfileForm';
 import { isTransactionSigningDeniedError } from '../../../../contexts/solana/solanaWalletContextUtils';
+import LoaderButton from '../../../../components/LoaderButton';
 
 type Props = {
   onPrevClicked(): void;
@@ -68,19 +69,18 @@ const ProfileOnboardingPublishContent: React.FC<Props> = ({
         <Button onClick={onPrevClicked} disabled={disableInteraction}>
           Back
         </Button>
-        <Button
+        <LoaderButton
           variant="contained"
           color="primary"
           onClick={onPublishClicked}
           disabled={disableInteraction}
-          startIcon={
-            isPublishing ? (
-              <CircularProgress color="primary" size={16} />
-            ) : undefined
-          }
+          loading={isPublishing}
+          progressProps={{
+            color: 'primary',
+          }}
         >
           Publish Now
-        </Button>
+        </LoaderButton>
       </SpacingContainer>
     </SpacingContainer>
   );

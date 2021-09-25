@@ -1,7 +1,9 @@
 import React from 'react';
-import { Box, Button, Switch, TextField, Typography } from '@mui/material';
+import { Box, Button, Switch, Typography } from '@mui/material';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import SpacingContainer from '../../../../components/SpacingContainer';
+import FormTextField from '../../../../components/form/FormTextField';
+import { ProfileGeneralMetadata } from '../../../../../util/profile/ProfileMetadata';
 
 type Props = {
   existingFormValues?: OnboardingProfileFormValues;
@@ -9,9 +11,10 @@ type Props = {
   onPrevClicked(): void;
 };
 
-export type OnboardingProfileFormValues = {
-  displayName?: string;
-  description?: string;
+export type OnboardingProfileFormValues = Omit<
+  ProfileGeneralMetadata,
+  'imageUri'
+> & {
   appAuthorityEnabled: boolean;
 };
 
@@ -33,34 +36,33 @@ const ProfileOnboardingProfileForm: React.FC<Props> = ({
   };
 
   // TODO: image upload?
-  // TODO: Extract components https://blog.logrocket.com/using-material-ui-with-react-hook-form/
   return (
     <SpacingContainer fullWidthChildren>
       <Typography variant="h4">Basic Info</Typography>
 
       <Typography variant="subtitle1">All fields are optional</Typography>
 
-      <Controller
-        name="displayName"
-        control={control}
-        render={({ field }) => (
-          <TextField label="Name" placeholder="Your display name" {...field} />
-        )}
+      <FormTextField
+        controllerProps={{
+          name: 'displayName',
+          control,
+        }}
+        label="Name"
+        placeholder="Your display name"
       />
-      <Controller
-        name="description"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            label="Bio"
-            placeholder="Tell us a bit about you"
-            {...field}
-            multiline
-            fullWidth
-            rows={3}
-          />
-        )}
+
+      <FormTextField
+        controllerProps={{
+          name: 'description',
+          control,
+        }}
+        label="Bio"
+        placeholder="Tell us a bit about you"
+        multiline
+        fullWidth
+        rows={3}
       />
+
       <Box
         display="flex"
         flexDirection="row"

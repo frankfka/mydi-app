@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
-import {
-  Alert,
-  AlertProps,
-  AlertTitle,
-  Button,
-  CircularProgress,
-} from '@mui/material';
+import { Alert, AlertProps, AlertTitle } from '@mui/material';
 import { useAppContext } from '../../../contexts/AppContext';
 import { getLogger } from '../../../../util/logger';
+import LoaderButton from '../../../components/LoaderButton';
 
 const logger = getLogger('ProfileNoAppAuthorityAlert');
 
@@ -34,18 +29,16 @@ const ProfileNoAppAuthorityAlert: React.FC<AlertProps> = (props) => {
     <Alert
       severity="warning"
       action={
-        <Button
+        <LoaderButton
           onClick={onAuthorizeClicked}
           color="primary"
-          startIcon={
-            loadingAuth ? (
-              <CircularProgress color="inherit" size={10} />
-            ) : undefined
-          }
-          disabled={loadingAuth}
+          loading={loadingAuth}
+          progressProps={{
+            size: 10,
+          }}
         >
           Authorize
-        </Button>
+        </LoaderButton>
       }
       {...props}
     >

@@ -1,4 +1,4 @@
-import { clusterApiUrl, Connection } from '@solana/web3.js';
+import { clusterApiUrl, Connection, ConnectionConfig } from '@solana/web3.js';
 import { Provider, Wallet } from '@project-serum/anchor';
 
 const solClusterConfig = process.env.NEXT_PUBLIC_SOL_CLUSTER;
@@ -18,10 +18,10 @@ if (solClusterConfig === 'LOCALNET') {
 /*
 Connection
  */
-export const getSolanaConnection = (): Connection => {
-  // TODO: make commitment programmatic?
+export const getSolanaConnection = (config?: ConnectionConfig): Connection => {
   return new Connection(solanaNetworkEndpoint, {
     commitment: 'processed',
+    ...config,
   });
 };
 

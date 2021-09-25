@@ -3,9 +3,7 @@ import { OAuthRedirectResult } from '@magic-ext/oauth';
 import {
   Alert,
   Box,
-  Button,
   Checkbox,
-  CircularProgress,
   Divider,
   List,
   ListItem,
@@ -23,6 +21,7 @@ import SpacingContainer from '../../../components/SpacingContainer';
 import { pick, pull } from 'lodash';
 import { callUpsertSocialDataApi } from '../../../util/upsertSocialDataApi';
 import { getLogger } from '../../../../util/logger';
+import LoaderButton from '../../../components/LoaderButton';
 
 type Props = {
   oAuthResult: OAuthRedirectResult;
@@ -129,19 +128,18 @@ const OAuthDataPublishFormContent: React.FC<Props> = ({
           textAlign: 'center',
         }}
       >
-        <Button
+        <LoaderButton
           onClick={onPublishClicked}
           variant="contained"
           color="primary"
-          startIcon={
-            isPublishing ? (
-              <CircularProgress color="primary" size={16} />
-            ) : undefined
-          }
-          disabled={isPublishing || dataKeysToSave.length === 0}
+          progressProps={{
+            color: 'primary',
+          }}
+          loading={isPublishing}
+          disabled={dataKeysToSave.length === 0}
         >
           Publish Now
-        </Button>
+        </LoaderButton>
       </Box>
     </SpacingContainer>
   );

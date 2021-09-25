@@ -3,6 +3,7 @@ import cache from 'memory-cache';
 import createPostFetchInit from '../../util/createPostFetchInit';
 import { getLogger } from '../../util/logger';
 import { getCid } from '../../util/ipfs/cidUtils';
+import EndpointResult from '../../types/EndpointResult';
 
 const logger = getLogger('storeMetadataApi');
 
@@ -19,14 +20,15 @@ export const callStoreMetadataApi = async (data: any): Promise<string> => {
       },
     })
   );
-  const storeApiResult = (await resp.json()) as StoreMetadataResponse;
+  const storeApiResult =
+    (await resp.json()) as EndpointResult<StoreMetadataResponse>;
 
-  if (!storeApiResult.cid) {
+  if (!storeApiResult.data?.cid) {
     throw Error(
-      'No CID from calling /store-metadata' + JSON.stringify(storeApiResult)
+      'No CID from calling /store-metadata ' + JSON.stringify(storeApiResult)
     );
   }
-  cache.put(getCid(storeApiResult.cid), data);
+  cache.put(getCid(storeApiResult.data.cid), data);
 
-  return storeApiResult.cid;
+  return storeApiResult.data.cid;
 };

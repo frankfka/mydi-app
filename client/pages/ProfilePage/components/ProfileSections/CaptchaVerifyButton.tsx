@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { getLogger } from '../../../../../util/logger';
-import { Button, ButtonProps, CircularProgress } from '@mui/material';
+import { ButtonProps } from '@mui/material';
+import LoaderButton from '../../../../components/LoaderButton';
 
 type Props = {
   onCaptchaVerified(token: string): void;
@@ -55,13 +56,14 @@ const CaptchaVerifyButton: React.FC<Props> = ({
   };
 
   return (
-    <Button
+    <LoaderButton
       variant="outlined"
-      startIcon={
-        loading ? <CircularProgress color="primary" size={16} /> : undefined
-      }
+      loading={loading}
+      progressProps={{
+        color: 'primary',
+      }}
       onClick={onStartVerificationClicked}
-      disabled={disabled}
+      disabled={disableButton}
       {...rest}
     >
       Verify Now
@@ -73,7 +75,7 @@ const CaptchaVerifyButton: React.FC<Props> = ({
         onExpire={onExpire}
         size="invisible"
       />
-    </Button>
+    </LoaderButton>
   );
 };
 
