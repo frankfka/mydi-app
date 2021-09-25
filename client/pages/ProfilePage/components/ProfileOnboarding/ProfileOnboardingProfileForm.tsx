@@ -78,7 +78,7 @@ const ProfileOnboardingProfileForm: React.FC<Props> = ({
           name="appAuthorityEnabled"
           control={control}
           render={({ field }) => (
-            <Switch {...field} defaultChecked={true} color="primary" />
+            <Switch {...field} defaultChecked={true} color="secondary" />
           )}
         />
       </Box>
@@ -87,7 +87,7 @@ const ProfileOnboardingProfileForm: React.FC<Props> = ({
         <Button onClick={onPrevClicked}>Back</Button>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={handleSubmit(onSubmit)}
         >
           Next

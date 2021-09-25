@@ -72,7 +72,7 @@ const GeneralProfileSectionContent: React.FC<Props> = ({ dataRecord }) => {
         loading={isSaving}
         disabled={!isDirty}
         variant="contained"
-        color="primary"
+        color="secondary"
         onClick={handleSubmit(onSubmit)}
         progressProps={{
           color: 'primary',
@@ -81,7 +81,7 @@ const GeneralProfileSectionContent: React.FC<Props> = ({ dataRecord }) => {
         Save
       </LoaderButton>
       <Button
-        color="primary"
+        color="secondary"
         onClick={() => cancelEditing()}
         disabled={isSaving}
       >

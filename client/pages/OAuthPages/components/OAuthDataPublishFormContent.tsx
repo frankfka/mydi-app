@@ -102,6 +102,7 @@ const OAuthDataPublishFormContent: React.FC<Props> = ({
                 secondaryAction={
                   <Checkbox
                     edge="end"
+                    color="secondary"
                     onChange={(e, checked) => onCheckboxChange(checked)}
                     checked={dataKeysToSave.includes(dataKey)}
                     // Disable if there's no data
@@ -131,7 +132,7 @@ const OAuthDataPublishFormContent: React.FC<Props> = ({
         <LoaderButton
           onClick={onPublishClicked}
           variant="contained"
-          color="primary"
+          color="secondary"
           progressProps={{
             color: 'primary',
           }}

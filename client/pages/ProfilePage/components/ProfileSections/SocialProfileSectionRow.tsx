@@ -62,7 +62,7 @@ const SocialProfileSectionRow: React.FC<Props> = ({
           </IconButton>
         </Tooltip>
         {/*Expand details button*/}
-        <IconButton edge="end" onClick={onToggleOpenDetails} color="primary">
+        <IconButton edge="end" onClick={onToggleOpenDetails} color="secondary">
           {openDetails ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
       </SpacingContainer>

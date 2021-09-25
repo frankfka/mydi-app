@@ -8,12 +8,12 @@ type Props = Partial<BoxProps> & {
 };
 
 const LoadingView: React.FC<Props> = ({ label, ...rest }) => {
-  let progressIndicator = <CircularProgress color="primary" />;
+  let progressIndicator = <CircularProgress color="secondary" />;
   if (!!label) {
     progressIndicator = (
       <SpacingContainer>
         {progressIndicator}
-        <Typography variant="body1" color="primary">
+        <Typography variant="body1" color="secondary">
           {label}
         </Typography>
       </SpacingContainer>

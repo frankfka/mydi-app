@@ -71,7 +71,7 @@ const ProfileOnboardingPublishContent: React.FC<Props> = ({
         </Button>
         <LoaderButton
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={onPublishClicked}
           disabled={disableInteraction}
           loading={isPublishing}

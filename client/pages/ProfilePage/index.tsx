@@ -12,6 +12,7 @@ import { getLogger } from '../../../util/logger';
 import ProfileContentSections from './components/ProfileContentSections';
 import ProfileNoAppAuthorityAlert from './components/ProfileNoAppAuthorityAlert';
 import { Button } from '@mui/material';
+import ColorModeToggle from '../../components/ColorModeToggle';
 
 const logger = getLogger('ProfilePage');
 
@@ -90,6 +91,7 @@ const ProfilePage = () => {
       {profileMainContent}
 
       {/*Testing*/}
+      <ColorModeToggle />
       {/*test btns*/}
       <TestSolanaProfileSection />
       {/*profile info*/}

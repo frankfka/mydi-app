@@ -31,7 +31,7 @@ const ProfileNoAppAuthorityAlert: React.FC<AlertProps> = (props) => {
       action={
         <LoaderButton
           onClick={onAuthorizeClicked}
-          color="primary"
+          color="secondary"
           loading={loadingAuth}
           progressProps={{
             size: 10,

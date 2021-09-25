@@ -17,7 +17,7 @@ const ProfileOnboardingWelcomeContent: React.FC<Props> = ({
         industry. Lorem Ipsum has been the industry standard dummy text ever
         since the 1500s.
       </Typography>
-      <Button variant="contained" color="primary" onClick={onNextClicked}>
+      <Button variant="contained" color="secondary" onClick={onNextClicked}>
         Next
       </Button>
     </SpacingContainer>

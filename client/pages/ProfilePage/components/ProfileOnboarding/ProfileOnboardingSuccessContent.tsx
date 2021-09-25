@@ -15,7 +15,7 @@ const ProfileOnboardingSuccessContent: React.FC<Props> = ({
       <Typography variant="body1">
         Your profile was created successfully.
       </Typography>
-      <Button variant="contained" color="primary" onClick={onDoneClicked}>
+      <Button variant="contained" color="secondary" onClick={onDoneClicked}>
         Done
       </Button>
     </SpacingContainer>

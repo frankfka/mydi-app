@@ -18,7 +18,7 @@ const CreateProfileContainer: React.FC<Props> = ({ showOnboardingDialog }) => {
         </Typography>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={showOnboardingDialog}
         >
           Get Started

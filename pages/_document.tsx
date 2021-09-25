@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
-import theme from '../client/theme/theme';
 import createEmotionCache from '../client/theme/createEmotionCache';
 
 export default class AppDocument extends Document {
@@ -9,10 +8,9 @@ export default class AppDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <meta name="theme-color" content={theme.palette.primary.main} />
           <link
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
           />
           <link rel="icon" href="/favicon.ico" />
         </Head>
