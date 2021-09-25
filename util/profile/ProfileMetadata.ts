@@ -1,4 +1,4 @@
-import { SocialLoginData } from '../util/profile/socialLoginData';
+import { SocialLoginData } from './socialLoginData';
 
 /*
 Expected metadata structures for different namespaces

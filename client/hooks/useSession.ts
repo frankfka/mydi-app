@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { AppSessionData } from '../../types/SessionTypes';
+import { AppSessionData } from '../../util/session/SessionTypes';
 import { useState } from 'react';
 import { callCreateSessionApi } from '../util/createSessionApi';
 import { getLogger } from '../../util/logger';

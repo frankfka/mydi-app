@@ -1,6 +1,6 @@
 import React from 'react';
 import { Divider, List } from '@mui/material';
-import { ProfileSocialDataRecords } from '../../../../../types/Profile';
+import { ProfileSocialDataRecords } from '../../../../../util/profile/Profile';
 import { profileSocialNamespaces } from '../../../../../util/profile/profileNamespaces';
 import SocialProfileSectionRow from './SocialProfileSectionRow';
 

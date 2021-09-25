@@ -3,7 +3,7 @@ import {
   ProfileGeneralMetadata,
   ProfileSocialAccountMetadata,
 } from './ProfileMetadata';
-import { ProfileSocialNamespace } from '../util/profile/profileNamespaces';
+import { ProfileSocialNamespace } from './profileNamespaces';
 
 /**
  * Represents all the data types for each namespace
@@ -23,24 +23,33 @@ export type ProfileDataRecord<T extends ProfileDataRecordTypes> = {
   metadataUri: string;
 };
 
+// All data records for general data
+export type ProfileGeneralDataRecords = {
+  // This is required
+  general: ProfileDataRecord<ProfileGeneralMetadata>;
+  // Optional properties
+  captcha?: ProfileDataRecord<ProfileCaptchaMetadata>;
+};
+
+// All data records for social data
 export type ProfileSocialDataRecords = {
   [k in ProfileSocialNamespace]?: ProfileDataRecord<ProfileSocialAccountMetadata>;
+};
+
+// All possible data records
+export type ProfileDataRecords = ProfileGeneralDataRecords &
+  ProfileSocialDataRecords;
+
+// Typing for an authority
+export type AuthorityProfileRecord = {
+  scope: string;
+  lastAuthorized: number;
 };
 
 /**
  * Represents a decoded user profile
  */
 export type Profile = {
-  authorities: {
-    [authority: string]: {
-      scope: string;
-      lastAuthorized: number;
-    };
-  };
-  data: {
-    // This is required
-    general: ProfileDataRecord<ProfileGeneralMetadata>;
-    // Optional properties
-    captcha?: ProfileDataRecord<ProfileCaptchaMetadata>;
-  } & ProfileSocialDataRecords;
+  authorities: Record<string, AuthorityProfileRecord>;
+  data: ProfileDataRecords;
 };

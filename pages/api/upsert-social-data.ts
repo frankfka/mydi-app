@@ -1,7 +1,7 @@
 import type { NextApiResponse } from 'next';
 import withSession, { NextIronRequest } from '../../server/session/withSession';
 import EndpointResult from '../../types/EndpointResult';
-import { CurrentWalletSessionData } from '../../types/SessionTypes';
+import { CurrentWalletSessionData } from '../../util/session/SessionTypes';
 import { SESSION_WALLET_KEY } from '../../util/session/sessionData';
 import executeAsyncForResult from '../../util/executeAsyncForResult';
 import { VerifyCaptchaResponse } from '../../server/handlers/verifyCaptchaHandler';
@@ -9,7 +9,7 @@ import resultToEndpointResult from '../../util/resultToEndpointResult';
 import {
   supportedMagicOAuthTypes,
   SupportedOAuthType,
-} from '../../client/util/magicLogin/magicUtils';
+} from '../../client/util/socialLogin/socialLoginUtils';
 import { SocialLoginData } from '../../util/profile/socialLoginData';
 import { upsertSocialData } from '../../server/handlers/upsertSocialDataHandler';
 

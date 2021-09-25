@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import useSession, { UseSessionState } from '../hooks/useSession';
-import { Profile } from '../../types/Profile';
+import { Profile } from '../../util/profile/Profile';
 import {
   SolanaProfileContextState,
   useSolanaProfileContext,

@@ -1,5 +1,9 @@
 import { OAuthRedirectResult } from '@magic-ext/oauth';
 import { SocialLoginData } from '../../../util/profile/socialLoginData';
+import {
+  ProfileSocialNamespace,
+  profileSocialNamespaces,
+} from '../../../util/profile/profileNamespaces';
 
 export const supportedMagicOAuthTypes = ['discord', 'github'] as const;
 
@@ -18,6 +22,14 @@ export const getSocialLoginData = (
     name: userInfo.name,
     nickname: userInfo.nickname,
   };
+};
+
+export const socialNamespaceToOauthType: Record<
+  ProfileSocialNamespace,
+  SupportedOAuthType
+> = {
+  [profileSocialNamespaces.socialDiscord]: 'discord',
+  [profileSocialNamespaces.socialGithub]: 'github',
 };
 
 /**

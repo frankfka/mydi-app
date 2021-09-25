@@ -1,7 +1,7 @@
 import React from 'react';
-import { ProfileSocialAccountMetadata } from '../../../../../types/ProfileMetadata';
+import { ProfileSocialAccountMetadata } from '../../../../../util/profile/ProfileMetadata';
 import { List, ListItem, ListItemText } from '@mui/material';
-import { socialLoginDataToDisplayName } from '../../../../util/magicLogin/magicUtils';
+import { socialLoginDataToDisplayName } from '../../../../util/socialLogin/socialLoginUtils';
 import { SocialLoginDataKey } from '../../../../../util/profile/socialLoginData';
 
 type Props = {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AppPage from '../../components/AppPage';
-import { createClientMagicInstance } from '../../util/magicLogin/clientMagicInstance';
+import { createClientMagicInstance } from '../../util/socialLogin/clientMagicInstance';
 import { OAuthRedirectResult } from '@magic-ext/oauth';
 import PaperSectionContainer from '../../components/PaperSectionContainer';
 import { getLogger } from '../../../util/logger';

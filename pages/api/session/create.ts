@@ -6,7 +6,7 @@ import withSession, {
 import {
   AppSessionData,
   CurrentWalletSessionData,
-} from '../../../types/SessionTypes';
+} from '../../../util/session/SessionTypes';
 import { SESSION_WALLET_KEY } from '../../../util/session/sessionData';
 
 export type CreateSessionResponse = AppSessionData;

@@ -1,5 +1,5 @@
 import createPostFetchInit from '../../util/createPostFetchInit';
-import { AppSessionData } from '../../types/SessionTypes';
+import { AppSessionData } from '../../util/session/SessionTypes';
 import EndpointResult from '../../types/EndpointResult';
 
 /**

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import SpacingContainer from '../../../../components/SpacingContainer';
 import { Typography } from '@mui/material';
-import { ProfileDataRecord } from '../../../../../types/Profile';
-import { ProfileCaptchaMetadata } from '../../../../../types/ProfileMetadata';
+import { ProfileDataRecord } from '../../../../../util/profile/Profile';
+import { ProfileCaptchaMetadata } from '../../../../../util/profile/ProfileMetadata';
 import { solanaAppAuthorityKey } from '../../../../../util/solana/solanaProgramUtils';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CaptchaVerifyButton from './CaptchaVerifyButton';

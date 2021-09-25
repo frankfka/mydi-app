@@ -18,7 +18,7 @@ import {
   oAuthTypeToDisplayName,
   socialLoginDataToDisplayName,
   SupportedOAuthType,
-} from '../../../util/magicLogin/magicUtils';
+} from '../../../util/socialLogin/socialLoginUtils';
 import SpacingContainer from '../../../components/SpacingContainer';
 import { pick, pull } from 'lodash';
 import { callUpsertSocialDataApi } from '../../../util/upsertSocialDataApi';

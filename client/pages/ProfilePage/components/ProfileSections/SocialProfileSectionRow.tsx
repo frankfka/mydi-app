@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import {
-  ProfileSocialNamespace,
-  socialNamespaceToOauthType,
-} from '../../../../../util/profile/profileNamespaces';
-import { ProfileDataRecord } from '../../../../../types/Profile';
-import { ProfileSocialAccountMetadata } from '../../../../../types/ProfileMetadata';
+import { ProfileSocialNamespace } from '../../../../../util/profile/profileNamespaces';
+import { ProfileDataRecord } from '../../../../../util/profile/Profile';
+import { ProfileSocialAccountMetadata } from '../../../../../util/profile/ProfileMetadata';
 import {
   Avatar,
   Button,
@@ -18,7 +15,10 @@ import {
 import { SocialIcon } from 'react-social-icons';
 import { ExpandLess, ExpandMore, Sync as SyncIcon } from '@mui/icons-material';
 import SocialProfileSectionRowDataList from './SocialProfileSectionRowDataList';
-import { oAuthTypeToDisplayName } from '../../../../util/magicLogin/magicUtils';
+import {
+  oAuthTypeToDisplayName,
+  socialNamespaceToOauthType,
+} from '../../../../util/socialLogin/socialLoginUtils';
 import SpacingContainer from '../../../../components/SpacingContainer';
 
 type Props = {

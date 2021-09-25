@@ -2,7 +2,8 @@
 Data namespaces that we support
  */
 
-import { SupportedOAuthType } from '../../client/util/magicLogin/magicUtils';
+// Social data namespaces
+import { ValueOf } from '../../types/ValueOf';
 
 export const profileSocialNamespaces = {
   socialDiscord: 'social.discord',
@@ -10,24 +11,16 @@ export const profileSocialNamespaces = {
   // TODO twitter, etc.
 } as const;
 
-export const socialNamespaceToOauthType: Record<
-  ProfileSocialNamespace,
-  SupportedOAuthType
-> = {
-  [profileSocialNamespaces.socialDiscord]: 'discord',
-  [profileSocialNamespaces.socialGithub]: 'github',
-};
-
+// All profile namespaces
 export const profileNamespaces = {
   general: 'general',
   captcha: 'captcha',
   ...profileSocialNamespaces,
 } as const;
 
-export type ProfileNamespace =
-  typeof profileNamespaces[keyof typeof profileNamespaces];
+// Types
+export type ProfileSocialNamespace = ValueOf<typeof profileSocialNamespaces>;
 
-export type ProfileSocialNamespace =
-  typeof profileSocialNamespaces[keyof typeof profileSocialNamespaces];
+export type ProfileNamespace = ValueOf<typeof profileNamespaces>;
 
 export type AuthorityScope = ProfileNamespace | 'all';

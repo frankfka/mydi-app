@@ -1,6 +1,6 @@
 import createPostFetchInit from '../../util/createPostFetchInit';
 import { SocialLoginData } from '../../util/profile/socialLoginData';
-import { SupportedOAuthType } from './magicLogin/magicUtils';
+import { SupportedOAuthType } from './socialLogin/socialLoginUtils';
 import EndpointResult from '../../types/EndpointResult';
 import { UpsertSocialDataHandlerResponse } from '../../server/handlers/upsertSocialDataHandler';
 

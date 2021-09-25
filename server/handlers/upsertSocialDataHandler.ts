@@ -7,7 +7,7 @@ import { getUpsertUserDataTxn } from '../../util/solana/solanaProgramProfileUtil
 import { SocialLoginData } from '../../util/profile/socialLoginData';
 import { uploadDataToIpfs } from '../../util/ipfs/uploadDataToIpfs';
 import { addIpfsPrefix } from '../../util/ipfs/cidUtils';
-import { SupportedOAuthType } from '../../client/util/magicLogin/magicUtils';
+import { SupportedOAuthType } from '../../client/util/socialLogin/socialLoginUtils';
 
 const logger = getLogger('upsertSocialDataHandler');
 

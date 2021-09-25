@@ -1,8 +1,8 @@
 import React from 'react';
-import { ProfileGeneralMetadata } from '../../../../../types/ProfileMetadata';
+import { ProfileGeneralMetadata } from '../../../../../util/profile/ProfileMetadata';
 import { TextField } from '@mui/material';
 import SpacingContainer from '../../../../components/SpacingContainer';
-import { ProfileDataRecord } from '../../../../../types/Profile';
+import { ProfileDataRecord } from '../../../../../util/profile/Profile';
 
 type Props = {
   dataRecord: ProfileDataRecord<ProfileGeneralMetadata>;

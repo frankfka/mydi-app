@@ -1,4 +1,4 @@
 export default interface Result<T> {
-  error?: Error;
+  error?: unknown;
   data?: T;
 }

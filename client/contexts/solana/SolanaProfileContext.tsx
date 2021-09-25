@@ -11,7 +11,7 @@ import {
   GetSolanaWalletProfileState,
   useGetSolanaWalletProfile,
 } from '../../hooks/useGetSolanaWalletProfile';
-import { ProfileGeneralMetadata } from '../../../types/ProfileMetadata';
+import { ProfileGeneralMetadata } from '../../../util/profile/ProfileMetadata';
 import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
 import {
   ClientUpsertUserDataParams,

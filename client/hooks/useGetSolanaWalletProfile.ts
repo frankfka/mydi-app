@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { Profile, ProfileDataRecordTypes } from '../../types/Profile';
+import { Profile, ProfileDataRecordTypes } from '../../util/profile/Profile';
 import { PublicKey } from '@solana/web3.js';
 import {
   ProfileNamespace,

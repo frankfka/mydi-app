@@ -5,8 +5,8 @@ import { useRouter } from 'next/router';
 import {
   supportedMagicOAuthTypes,
   SupportedOAuthType,
-} from '../../util/magicLogin/magicUtils';
-import { createClientMagicInstance } from '../../util/magicLogin/clientMagicInstance';
+} from '../../util/socialLogin/socialLoginUtils';
+import { createClientMagicInstance } from '../../util/socialLogin/clientMagicInstance';
 import CenteredInfoContainer from '../../components/CenteredInfoContainer';
 import OAuthErrorView from './components/OAuthErrorView';
 import LoadingView from '../../components/LoadingView';

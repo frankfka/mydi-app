@@ -1,6 +1,6 @@
 import type { NextApiResponse } from 'next';
 import EndpointResult from '../../types/EndpointResult';
-import { CurrentWalletSessionData } from '../../types/SessionTypes';
+import { CurrentWalletSessionData } from '../../util/session/SessionTypes';
 import { SESSION_WALLET_KEY } from '../../util/session/sessionData';
 import withSession, { NextIronRequest } from '../../server/session/withSession';
 import executeAsyncForResult from '../../util/executeAsyncForResult';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Profile } from '../../../../types/Profile';
+import { Profile } from '../../../../util/profile/Profile';
 import GeneralProfileSectionContent from './ProfileSections/GeneralProfileSectionContent';
 import PaperSectionContainer from '../../../components/PaperSectionContainer';
 import { Typography } from '@mui/material';

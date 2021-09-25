@@ -4,8 +4,10 @@ import Result from '../types/Result';
 export default function resultToEndpointResult<T>(
   result: Result<T>
 ): EndpointResult<T> {
+  const errorMessage =
+    result.error instanceof Error ? result.error.message : `${result.error}`;
   return {
     data: result.data,
-    error: result.error ? result.error.message : undefined,
+    error: errorMessage,
   };
 }

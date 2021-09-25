@@ -9,7 +9,7 @@ import {
 } from '../../../util/solana/solanaProgramInstructions';
 import { solanaAppAuthorityKey } from '../../../util/solana/solanaProgramUtils';
 import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
-import { ProfileGeneralMetadata } from '../../../types/ProfileMetadata';
+import { ProfileGeneralMetadata } from '../../../util/profile/ProfileMetadata';
 import { Program } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import {
