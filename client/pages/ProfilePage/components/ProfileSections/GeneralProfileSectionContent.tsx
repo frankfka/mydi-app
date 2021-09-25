@@ -9,6 +9,7 @@ import { useAppContext } from '../../../../contexts/AppContext';
 import { getLogger } from '../../../../../util/logger';
 import { isTransactionSigningDeniedError } from '../../../../contexts/solana/solanaWalletContextUtils';
 import LoaderButton from '../../../../components/LoaderButton';
+import { useGlobalViewContext } from '../../../../contexts/views/GlobalViewContext';
 
 const logger = getLogger('GeneralProfileSectionContent');
 
@@ -22,6 +23,7 @@ const GeneralProfileSectionContent: React.FC<Props> = ({ dataRecord }) => {
   const metadata = dataRecord.data;
 
   const appContext = useAppContext();
+  const globalViewContext = useGlobalViewContext();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -52,15 +54,18 @@ const GeneralProfileSectionContent: React.FC<Props> = ({ dataRecord }) => {
       // Also reload profile data
       appContext.solanaProfileState.userProfile.mutate();
     } catch (err) {
-      // TODO: Global toast context
       if (isTransactionSigningDeniedError(err)) {
-        // setPublishErrText(
-        //   'Signing the transaction was denied. Please try again.'
-        // );
+        globalViewContext.showSnackbar({
+          type: 'warning',
+          message: 'Signing the transaction was denied. Please try again.',
+        });
         cancelEditing();
       } else {
         logger.error('Error upserting user data', err);
-        // setPublishErrText('Something went wrong. Please try again');
+        globalViewContext.showSnackbar({
+          type: 'error',
+          message: 'Something went wrong. Please try again.',
+        });
       }
     }
     setIsSaving(false);
@@ -90,7 +95,9 @@ const GeneralProfileSectionContent: React.FC<Props> = ({ dataRecord }) => {
     </SpacingContainer>
   ) : (
     <SpacingContainer direction="row-reverse">
-      <Button onClick={() => setIsEditing(true)}>Edit</Button>
+      <Button onClick={() => setIsEditing(true)} color="secondary">
+        Edit
+      </Button>
     </SpacingContainer>
   );
 

@@ -4,16 +4,17 @@ import { CssBaseline, PaletteMode, Theme, ThemeProvider } from '@mui/material';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from '../../theme/createEmotionCache';
 
-type ColorModeContextState = {
+type AppThemeContextState = {
   colorMode: PaletteMode;
   toggleColorMode(): void;
 };
+
 export type AppThemeContextProviderProps = {
   emotionCache?: EmotionCache;
 };
 
-export const AppThemeContext = createContext<ColorModeContextState>(
-  {} as unknown as ColorModeContextState
+export const AppThemeContext = createContext<AppThemeContextState>(
+  {} as unknown as AppThemeContextState
 );
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -23,7 +24,7 @@ export const AppThemeContextProvider: React.FC<AppThemeContextProviderProps> =
   ({ emotionCache, children }) => {
     const [colorMode, setColorMode] = useState<PaletteMode>('light');
 
-    const contextState: ColorModeContextState = {
+    const contextState: AppThemeContextState = {
       colorMode,
       toggleColorMode() {
         setColorMode((mode) => (mode === 'light' ? 'dark' : 'light'));

@@ -57,12 +57,12 @@ const SocialProfileSectionRow: React.FC<Props> = ({
       <SpacingContainer direction="row" alignItems="center">
         {/*Re-sync button*/}
         <Tooltip title="Reconnect to update data">
-          <IconButton onClick={openOAuthTab} size="small">
+          <IconButton onClick={openOAuthTab} size="small" color="secondary">
             <SyncIcon />
           </IconButton>
         </Tooltip>
         {/*Expand details button*/}
-        <IconButton edge="end" onClick={onToggleOpenDetails} color="secondary">
+        <IconButton edge="end" onClick={onToggleOpenDetails} color="primary">
           {openDetails ? <ExpandLess /> : <ExpandMore />}
         </IconButton>
       </SpacingContainer>

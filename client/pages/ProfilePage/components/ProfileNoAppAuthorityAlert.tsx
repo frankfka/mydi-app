@@ -3,11 +3,13 @@ import { Alert, AlertProps, AlertTitle } from '@mui/material';
 import { useAppContext } from '../../../contexts/AppContext';
 import { getLogger } from '../../../../util/logger';
 import LoaderButton from '../../../components/LoaderButton';
+import { useGlobalViewContext } from '../../../contexts/views/GlobalViewContext';
 
 const logger = getLogger('ProfileNoAppAuthorityAlert');
 
 const ProfileNoAppAuthorityAlert: React.FC<AlertProps> = (props) => {
   const appContext = useAppContext();
+  const globalViewContext = useGlobalViewContext();
   const [loadingAuth, setIsLoadingAuth] = useState(false);
 
   const onAuthorizeClicked = async () => {
@@ -19,8 +21,11 @@ const ProfileNoAppAuthorityAlert: React.FC<AlertProps> = (props) => {
     try {
       await appContext.solanaProfileState.createAppAuthority();
     } catch (err) {
-      logger.warn('Error creating app authority', err);
-      // TODO: Global error toasts?
+      logger.error('Error creating app authority', err);
+      globalViewContext.showSnackbar({
+        type: 'error',
+        message: 'Something went wrong. Please try again.',
+      });
     }
     setIsLoadingAuth(false);
   };
