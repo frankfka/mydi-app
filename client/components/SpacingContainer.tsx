@@ -6,6 +6,8 @@ type Props = Partial<GridProps> & {
   itemClassName?: string; // Custom classname to apply to each grid item
 };
 
+// TODO: Use Stack instead?
+// https://mui.com/components/stack/
 const SpacingContainer: React.FC<Props> = ({
   children,
   itemClassName,

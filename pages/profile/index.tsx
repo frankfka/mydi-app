@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import React from 'react';
-import HomePage from '../client/pages/HomePage';
+import ProfilePage from '../../client/pages/ProfilePage';
 
 export default function Home() {
   return (
@@ -8,7 +8,7 @@ export default function Home() {
       <Head>
         <title>Mydi</title>
       </Head>
-      <HomePage />
+      <ProfilePage />
     </div>
   );
 }
