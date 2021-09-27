@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import CenteredInfoContainer from '../../../components/CenteredInfoContainer';
 import SpacingContainer from '../../../components/SpacingContainer';
+import SolanaWalletButton from '../../../components/wallet/solana/SolanaWalletButton';
 
 const ConnectWalletContainer = () => {
   return (
@@ -13,7 +13,7 @@ const ConnectWalletContainer = () => {
           Connect your Solana wallet to get started. We currently only support
           Phantom wallet.
         </Typography>
-        <WalletMultiButton />
+        <SolanaWalletButton />
       </SpacingContainer>
     </CenteredInfoContainer>
   );

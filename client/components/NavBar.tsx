@@ -34,7 +34,7 @@ const NavBar: React.FC<NavBarProps> = (props) => {
             {/*Logo*/}
             <Box sx={{ cursor: 'pointer ' }}>
               <NextLink href="/" passHref>
-                <AppLogo height={46} width={46} />
+                <AppLogo height={50} width={50} />
               </NextLink>
             </Box>
 

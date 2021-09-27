@@ -21,7 +21,7 @@ const AppPage: React.FC<Props> = ({
       <Box
         {...rest}
         sx={{
-          padding: (theme) => theme.spacing(12, 12),
+          padding: (theme) => theme.spacing(4, 12, 12, 12),
         }}
       >
         {children}

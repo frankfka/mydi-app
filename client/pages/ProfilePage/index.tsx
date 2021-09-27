@@ -11,8 +11,9 @@ import { useAppContext } from '../../contexts/AppContext';
 import { getLogger } from '../../../util/logger';
 import ProfileContentSections from './components/ProfileContentSections';
 import ProfileNoAppAuthorityAlert from './components/ProfileNoAppAuthorityAlert';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import ColorModeToggle from '../../components/ColorModeToggle';
+import SolanaWalletButton from '../../components/wallet/solana/SolanaWalletButton';
 
 const logger = getLogger('ProfilePage');
 
@@ -32,6 +33,20 @@ const ProfilePage = () => {
           marginBottom: 2,
         }}
       />
+    );
+  }
+
+  let walletButtonContent: JSX.Element | undefined;
+  if (appState.currentUserPubKey && !appState.isLoading) {
+    walletButtonContent = (
+      <Box
+        sx={{
+          marginBottom: 2,
+          textAlign: 'right',
+        }}
+      >
+        <SolanaWalletButton variant="outlined" />
+      </Box>
     );
   }
 
@@ -81,11 +96,15 @@ const ProfilePage = () => {
         open={showOnboardingDialog}
         onClose={closeOnboardingDialog}
       />
-      {/*Profile Alt Content*/}
-      {profileAltContent}
 
       {/*No authority alert*/}
       {profileNoAppAuthorityContent}
+
+      {/*Connected wallet button*/}
+      {walletButtonContent}
+
+      {/*Profile Alt Content*/}
+      {profileAltContent}
 
       {/*Profile Main Content*/}
       {profileMainContent}
