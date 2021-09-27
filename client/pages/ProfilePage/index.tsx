@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import AppPage from '../../components/AppPage';
 import ConnectWalletContainer from './components/ConnectWalletContainer';
-import TestSolanaProfileSection from './components/TestSolanaProfileSection';
 import ProfileOnboardingDialog from './components/ProfileOnboardingDialog';
 import CreateProfileContainer from './components/CreateProfileContainer';
 import ErrorInfoView from '../../components/ErrorInfoView';
@@ -11,8 +10,7 @@ import { useAppContext } from '../../contexts/AppContext';
 import { getLogger } from '../../../util/logger';
 import ProfileContentSections from './components/ProfileContentSections';
 import ProfileNoAppAuthorityAlert from './components/ProfileNoAppAuthorityAlert';
-import { Box, Button } from '@mui/material';
-import ColorModeToggle from '../../components/ColorModeToggle';
+import { Box } from '@mui/material';
 import SolanaWalletButton from '../../components/wallet/solana/SolanaWalletButton';
 
 const logger = getLogger('ProfilePage');
@@ -81,15 +79,8 @@ const ProfilePage = () => {
     profileMainContent = <ProfileContentSections profile={appState.profile} />;
   }
 
-  logger.debug('Render');
-
-  const testBtnClick = () => {
-    window.open('/profile/oauth', '_blank');
-  };
-
   return (
     <AppPage>
-      <Button onClick={testBtnClick}>Test</Button>
       {/*Onboarding dialog*/}
       <ProfileOnboardingDialog
         onDoneOnboardingClicked={closeOnboardingDialog}
@@ -110,15 +101,7 @@ const ProfilePage = () => {
       {profileMainContent}
 
       {/*Testing*/}
-      <ColorModeToggle />
-      {/*test btns*/}
-      <TestSolanaProfileSection />
-      {/*profile info*/}
-      {appState.profile && (
-        <div>
-          <pre>{JSON.stringify(appState.profile, null, 2)}</pre>
-        </div>
-      )}
+      {/*<TestSolanaProfileSection />*/}
     </AppPage>
   );
 };

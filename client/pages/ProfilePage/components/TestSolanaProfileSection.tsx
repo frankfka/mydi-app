@@ -23,6 +23,14 @@ const TestSolanaProfileSection = () => {
     <SpacingContainer direction="row">
       <Button onClick={testCreateDummyProfile}>Create Profile</Button>
       <Button onClick={testDeleteDummyProfile}>Delete Profile</Button>
+      {/*profile info*/}
+      {solanaContext.userProfile.profile && (
+        <div>
+          <pre>
+            {JSON.stringify(solanaContext.userProfile.profile, null, 2)}
+          </pre>
+        </div>
+      )}
     </SpacingContainer>
   );
 };
