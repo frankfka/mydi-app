@@ -38,9 +38,12 @@ const ProfileOnboardingProfileForm: React.FC<Props> = ({
   // TODO: image upload?
   return (
     <SpacingContainer fullWidthChildren>
-      <Typography variant="h4">Basic Info</Typography>
+      <Typography variant="h4">The Basics</Typography>
 
-      <Typography variant="subtitle1">All fields are optional</Typography>
+      <Typography variant="subtitle1">
+        Fill out a basic profile with anything you&apos;d like - or share
+        nothing at all. All fields are optional.
+      </Typography>
 
       <FormTextField
         controllerProps={{

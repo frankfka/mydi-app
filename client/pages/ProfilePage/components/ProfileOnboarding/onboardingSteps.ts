@@ -7,7 +7,7 @@ export const ONBOARDING_STEPS: OnboardingStepData[] = [
     name: 'Welcome',
   },
   {
-    name: 'Profile',
+    name: 'Basics',
   },
   {
     name: 'Publish',

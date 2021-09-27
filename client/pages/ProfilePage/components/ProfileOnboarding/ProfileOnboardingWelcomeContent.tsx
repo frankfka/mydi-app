@@ -13,9 +13,9 @@ const ProfileOnboardingWelcomeContent: React.FC<Props> = ({
     <SpacingContainer fullWidthChildren>
       <Typography variant="h4">Create Your Profile</Typography>
       <Typography variant="body1">
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry standard dummy text ever
-        since the 1500s.
+        Craft your Web 3.0 identity however you&apos;d like. Easily create a
+        pseudonymous profile and share only what you want. You have complete
+        control and ownership over the data that you publish to the blockchain.
       </Typography>
       <Button variant="contained" color="secondary" onClick={onNextClicked}>
         Next
