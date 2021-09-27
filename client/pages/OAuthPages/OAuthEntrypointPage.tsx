@@ -23,7 +23,7 @@ const OAuthEntrypointPage = () => {
   const { type: oAuthType } = router.query;
   const session = useSession();
 
-  const isValidSession = session.session?.wallet?.pubKey != null;
+  const isValidSession = session.session?.wallet?.walletIdentifier != null;
   let validOAuthType: SupportedOAuthType | undefined = undefined;
   if (
     !!oAuthType &&

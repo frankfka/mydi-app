@@ -44,7 +44,7 @@ const OAuthRedirectPage = () => {
     getOAuthResult();
   }, []);
 
-  let redirectPageContent: JSX.Element;
+  let redirectPageContent: JSX.Element | undefined = undefined;
   if (dataPublishSuccess) {
     redirectPageContent = (
       <PaperSectionContainer>
@@ -59,7 +59,7 @@ const OAuthRedirectPage = () => {
         </CenteredInfoContainer>
       </PaperSectionContainer>
     );
-  } else if (oAuthResult != null && session.session?.wallet?.pubKey != null) {
+  } else if (oAuthResult != null && session.session?.wallet != null) {
     redirectPageContent = (
       <PaperSectionContainer>
         <OAuthDataPublishFormContent
@@ -74,7 +74,6 @@ const OAuthRedirectPage = () => {
     redirectPageContent = <OAuthErrorView />;
   } else {
     logger.warn('Unhandled view state');
-    redirectPageContent = <OAuthErrorView />;
   }
 
   return <AppPage hideNavBar>{redirectPageContent}</AppPage>;

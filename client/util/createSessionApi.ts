@@ -1,20 +1,21 @@
 import createPostFetchInit from '../../util/createPostFetchInit';
-import { AppSessionData } from '../../util/session/SessionTypes';
+import {
+  AppSessionData,
+  CurrentWalletSessionData,
+} from '../../util/session/SessionTypes';
 import EndpointResult from '../../types/EndpointResult';
 
 /**
- * Calls our backend API to create a session with a given public key
- * @param pubKey
+ * Calls our backend API to create a session with a given wallet identifier and type
+ * @param walletData
  */
 export const callCreateSessionApi = async (
-  pubKey: string
+  walletData: CurrentWalletSessionData
 ): Promise<EndpointResult<AppSessionData>> => {
   const res = await fetch(
     '/api/session/create',
     createPostFetchInit({
-      body: {
-        pubKey,
-      },
+      body: walletData,
     })
   );
 

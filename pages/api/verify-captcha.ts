@@ -23,9 +23,9 @@ async function handler(
     SESSION_WALLET_KEY
   );
 
-  if (!walletSessionData?.pubKey) {
+  if (!walletSessionData) {
     res.status(400).json({
-      error: 'No current wallet address in session',
+      error: 'No current wallet session',
     });
     return;
   }
@@ -41,7 +41,10 @@ async function handler(
 
   // Verification logic
   const result = await executeAsyncForResult(async () => {
-    return verifyCaptchaHandler(walletSessionData.pubKey, captchaToken);
+    return verifyCaptchaHandler(
+      walletSessionData.walletIdentifier,
+      captchaToken
+    );
   });
 
   res.status(200).json(resultToEndpointResult(result));

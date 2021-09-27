@@ -1,5 +1,8 @@
 import useSWR from 'swr';
-import { AppSessionData } from '../../util/session/SessionTypes';
+import {
+  AppSessionData,
+  CurrentWalletSessionData,
+} from '../../util/session/SessionTypes';
 import { useState } from 'react';
 import { callCreateSessionApi } from '../util/createSessionApi';
 import { getLogger } from '../../util/logger';
@@ -11,7 +14,7 @@ export type UseSessionState = {
   session?: AppSessionData;
   isLoading: boolean;
   isError: boolean;
-  createSession(pubKey: string): Promise<void>;
+  createSession(walletData: CurrentWalletSessionData): Promise<void>;
   destroySession(): Promise<void>;
 };
 
@@ -33,12 +36,12 @@ export default function useSession(): UseSessionState {
   const [isMutating, setIsMutating] = useState(false);
   const [isMutationError, setIsMutationError] = useState(false);
 
-  const createSession = async (pubKey: string) => {
+  const createSession = async (walletData: CurrentWalletSessionData) => {
     setIsMutating(true);
     try {
-      logger.debug('Creating session with', pubKey);
+      logger.debug('Creating session with', walletData);
       // Refresh user
-      await callCreateSessionApi(pubKey);
+      await callCreateSessionApi(walletData);
       await mutate();
     } catch (err) {
       logger.error('Error from create session API', err);

@@ -46,9 +46,9 @@ async function handler(
     SESSION_WALLET_KEY
   );
 
-  if (!walletSessionData?.pubKey) {
+  if (!walletSessionData) {
     res.status(400).json({
-      error: 'No current wallet address in session',
+      error: 'No current wallet session',
     });
     return;
   }
@@ -63,7 +63,7 @@ async function handler(
 
   const result = await executeAsyncForResult(async () => {
     return upsertSocialData(
-      walletSessionData.pubKey,
+      walletSessionData.walletIdentifier,
       reqData.provider,
       reqData.metadata
     );

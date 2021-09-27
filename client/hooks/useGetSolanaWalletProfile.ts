@@ -120,6 +120,7 @@ export const useGetSolanaWalletProfile = (
   // Because we're passing an object (program), use `useMemo` to make sure useSwr doesn't get stuck in an infinite loop
   const swrKey = useMemo(
     () => (params != null ? [params.program, params.userKey] : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [params?.userKey]
   );
   const { data, error, mutate } = useSWR(swrKey, solanaWalletProfileFetcher);

@@ -21,30 +21,30 @@ async function handler(
   req: NextIronRequest,
   res: NextApiResponse<EndpointResult<CreateSessionResponse>>
 ) {
-  const { pubKey } = req.body;
+  const newWalletSessionData: CurrentWalletSessionData = req.body;
 
   // Destroy the existing session
   await req.session.destroy();
 
-  if (!pubKey) {
+  if (!newWalletSessionData.walletIdentifier || !newWalletSessionData.type) {
     res.status(400).json({
-      error: 'Attempting to create a session without a pubKey',
+      error:
+        'Attempting to create a session without a wallet identifier or type',
     });
 
     return;
   }
 
   // Create a new session
-  await req.session.set<CurrentWalletSessionData>(SESSION_WALLET_KEY, {
-    pubKey,
-  });
+  await req.session.set<CurrentWalletSessionData>(
+    SESSION_WALLET_KEY,
+    newWalletSessionData
+  );
   await req.session.save();
 
   res.status(200).json({
     data: {
-      wallet: {
-        pubKey: pubKey,
-      },
+      wallet: newWalletSessionData,
     },
   });
 }

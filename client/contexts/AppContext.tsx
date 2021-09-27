@@ -44,7 +44,8 @@ export const AppContextProvider: React.FC = ({ children }) => {
   const solanaProfileState = useSolanaProfileContext();
 
   const currentWalletPubKey = solanaProfileState.wallet.publicKey?.toString();
-  const currentSessionPubKey = sessionState.session?.wallet?.pubKey;
+  const sessionWalletIdentifier =
+    sessionState.session?.wallet?.walletIdentifier;
 
   const appAuthorityEnabled =
     solanaProfileState.userProfile?.profile?.authorities[
@@ -56,10 +57,13 @@ export const AppContextProvider: React.FC = ({ children }) => {
     const updateSession = async () => {
       if (currentWalletPubKey != null) {
         // Pubkey mismatch - update session
-        if (currentWalletPubKey !== currentSessionPubKey) {
-          await sessionState.createSession(currentWalletPubKey);
+        if (currentWalletPubKey !== sessionWalletIdentifier) {
+          await sessionState.createSession({
+            walletIdentifier: currentWalletPubKey,
+            type: 'solana',
+          });
         }
-      } else if (currentSessionPubKey != null) {
+      } else if (sessionWalletIdentifier != null) {
         // Wallet is disconnected BUT there is a pubkey in session
         // Normally we should destroy the session, but to support oAuth,
         // we "cache" the latest session
@@ -68,17 +72,17 @@ export const AppContextProvider: React.FC = ({ children }) => {
     };
 
     updateSession();
-  }, [currentWalletPubKey, currentSessionPubKey, sessionState]);
+  }, [currentWalletPubKey, sessionWalletIdentifier, sessionState]);
 
   // Debug logging
   useEffect(() => {
     logger.debug('Current AppContext State', {
       walletPubKey: currentWalletPubKey,
-      sessionPubKey: currentSessionPubKey,
+      sessionPubKey: sessionWalletIdentifier,
       profile: solanaProfileState.userProfile.profile,
     });
   }, [
-    currentSessionPubKey,
+    sessionWalletIdentifier,
     currentWalletPubKey,
     solanaProfileState.userProfile.profile,
   ]);
