@@ -77,7 +77,7 @@ const OAuthRedirectPage = () => {
     redirectPageContent = <OAuthErrorView />;
   }
 
-  return <AppPage>{redirectPageContent}</AppPage>;
+  return <AppPage hideNavBar>{redirectPageContent}</AppPage>;
 };
 
 export default OAuthRedirectPage;

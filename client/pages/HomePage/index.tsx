@@ -16,6 +16,7 @@ import HeaderImage from './assets/homepage_header_img.svg';
 import SpacingContainer from '../../components/SpacingContainer';
 import WaveDivider from './components/WaveDivider';
 import FeaturePaperContainer from './components/FeaturePaperContainer';
+import NavBar from '../../components/NavBar';
 
 /**
  * Landing page
@@ -26,6 +27,7 @@ const HomePage = () => {
 
   return (
     <div>
+      <NavBar color="transparent" elevation={0} position="static" />
       {/*CTA + Header*/}
       <Container>
         <Box

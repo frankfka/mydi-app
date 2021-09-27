@@ -52,7 +52,7 @@ const OAuthEntrypointPage = () => {
       <OAuthErrorView />
     );
 
-  return <AppPage>{pageContent}</AppPage>;
+  return <AppPage hideNavBar>{pageContent}</AppPage>;
 };
 
 export default OAuthEntrypointPage;

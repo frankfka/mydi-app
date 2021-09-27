@@ -1,10 +1,22 @@
 import React from 'react';
 import { Box, BoxProps } from '@mui/material';
+import NavBar, { NavBarProps } from './NavBar';
 
-const AppPage: React.FC<BoxProps> = ({ children, ...rest }) => {
+type Props = {
+  hideNavBar?: boolean;
+  navBarProps?: NavBarProps;
+} & BoxProps;
+
+const AppPage: React.FC<Props> = ({
+  hideNavBar,
+  navBarProps,
+  children,
+  ...rest
+}) => {
   return (
     <div>
       {/*Nav Bar*/}
+      {!hideNavBar && <NavBar {...navBarProps} />}
       {/*Main content*/}
       <Box
         {...rest}
