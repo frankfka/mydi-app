@@ -6,7 +6,7 @@ const OAuthRedirect = () => {
   return (
     <div>
       <Head>
-        <title>Mydi</title>
+        <title>Mydi | Connect Social Account</title>
       </Head>
       <OAuthRedirectPage />
     </div>

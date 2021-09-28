@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Mydi</title>
+        <title>Mydi | Profile</title>
       </Head>
       <ProfilePage />
     </div>

@@ -44,7 +44,9 @@ const HomePage = () => {
           >
             <Grid item md={8}>
               <SpacingContainer>
-                <Typography variant="h2">Craft Your Web3.0 Identity</Typography>
+                <Typography variant="h2">
+                  Craft Your Web 3.0 Identity
+                </Typography>
                 <Typography variant="h6">
                   Mydi lets you create a public social profile for all of the
                   decentralized web.
