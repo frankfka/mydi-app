@@ -3,7 +3,7 @@ import { Profile } from '../../../util/profile/Profile';
 import {
   ClientUpsertUserDataParams,
   CreateUserProfileParams,
-} from './MutationParamTypes';
+} from './UserMutationParamTypes';
 import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
 
 /*

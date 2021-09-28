@@ -3,8 +3,8 @@ import useSession from '../hooks/useSession';
 import { useSolanaAppContextDataSource } from './solana/SolanaAppContextDataSourceContext';
 import { getLogger } from '../../util/logger';
 import { AppSessionData } from '../../util/session/SessionTypes';
-import { Wallet } from '../../types/Wallet';
 import AppContextDataSourceState from './types/AppContextDataSourceState';
+import { useCurrentWallet, walletsAreEquivalent } from './useCurrentWallet';
 
 type AppContextState = {
   /*
@@ -21,36 +21,26 @@ export const AppContext = createContext<AppContextState>(
   {} as unknown as AppContextState
 );
 
-// TODO: Can test this now!
 export const AppContextProvider: React.FC = ({ children }) => {
   const sessionState = useSession();
   const solanaAppContextDataSource = useSolanaAppContextDataSource();
 
-  // TODO: hook for current wallet
-  const currentWallet: Wallet | undefined =
-    solanaAppContextDataSource.connectedWallet?.walletIdentifier != null
-      ? {
-          type: 'solana',
-          walletIdentifier:
-            solanaAppContextDataSource.connectedWallet?.walletIdentifier,
-        }
-      : undefined;
+  const currentWallet = useCurrentWallet();
+  const sessionWallet = sessionState.session?.wallet;
 
-  const sessionWalletIdentifier =
-    sessionState.session?.wallet?.walletIdentifier;
+  // When supporting additional data sources, we can just change this
+  const appContextDataSourceState: AppContextDataSourceState =
+    solanaAppContextDataSource;
 
   // Reload session on public key change
   useEffect(() => {
     const updateSession = async () => {
       if (currentWallet != null) {
         // Wallet mismatch - update session
-        if (currentWallet.walletIdentifier !== sessionWalletIdentifier) {
-          await sessionState.createSession({
-            walletIdentifier: currentWallet.walletIdentifier,
-            type: 'solana',
-          });
+        if (!walletsAreEquivalent(currentWallet, sessionWallet)) {
+          await sessionState.createSession(currentWallet);
         }
-      } else if (sessionWalletIdentifier != null) {
+      } else if (sessionWallet != null) {
         // Wallet is disconnected BUT there is a pubkey in session
         // Normally we should destroy the session, but to support oAuth,
         // we "cache" the latest session
@@ -59,27 +49,23 @@ export const AppContextProvider: React.FC = ({ children }) => {
     };
 
     updateSession();
-  }, [currentWallet?.walletIdentifier, sessionWalletIdentifier, sessionState]);
+  }, [currentWallet, sessionWallet, sessionState]);
 
   // Debug logging
   useEffect(() => {
     logger.debug('Current AppContext State', {
       wallet: currentWallet,
       session: sessionState.session,
-      profile: solanaAppContextDataSource.profile,
+      profile: appContextDataSourceState.profile,
     });
-  }, [
-    sessionWalletIdentifier,
-    currentWallet,
-    solanaAppContextDataSource.profile,
-  ]);
+  }, [sessionState.session, currentWallet, appContextDataSourceState.profile]);
 
   const isLoading =
-    sessionState.isLoading || solanaAppContextDataSource.isLoading;
-  const isError = sessionState.isError || solanaAppContextDataSource.isError;
+    sessionState.isLoading || appContextDataSourceState.isLoading;
+  const isError = sessionState.isError || appContextDataSourceState.isError;
 
   const contextState: AppContextState = {
-    ...solanaAppContextDataSource,
+    ...appContextDataSourceState,
     currentSessionData: sessionState.session,
     isLoading,
     isError,

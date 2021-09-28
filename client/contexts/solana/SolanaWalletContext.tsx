@@ -11,7 +11,7 @@ const SolanaWalletContextProvider: FC = ({ children }) => {
   const wallets = useMemo(
     () => [
       getPhantomWallet(),
-      // NOTE: Only Phantom currently supports message signing, so disabling other wallets
+      // TODO: Support other wallets
       // getSolflareWallet(),
       // getSlopeWallet(),
       // getTorusWallet({
@@ -25,6 +25,7 @@ const SolanaWalletContextProvider: FC = ({ children }) => {
     []
   );
 
+  // TODO: Test this out
   // Passing autoconnect here seems to put us in an infinite loop, can maybe pass autoConnect for prod builds
   return (
     <ConnectionProvider endpoint={solanaNetworkEndpoint}>

@@ -34,7 +34,6 @@ const socialNamespaceToNetworkName: Record<ProfileSocialNamespace, string> = {
   'social.discord': 'discord',
 };
 
-// TODO: need to disable this if no app authroity
 const SocialProfileSectionRow: React.FC<Props> = ({
   namespace,
   dataRecord,

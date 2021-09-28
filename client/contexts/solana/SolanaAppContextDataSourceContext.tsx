@@ -12,7 +12,7 @@ import {
 import {
   GetSolanaWalletProfileParams,
   useGetSolanaWalletProfile,
-} from '../../hooks/useGetSolanaWalletProfile';
+} from './useGetSolanaWalletProfile';
 import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
 import {
   createAppAuthority,
@@ -24,7 +24,7 @@ import {
 import {
   ClientUpsertUserDataParams,
   CreateUserProfileParams,
-} from '../types/MutationParamTypes';
+} from '../types/UserMutationParamTypes';
 import AppContextDataSourceState from '../types/AppContextDataSourceState';
 
 export const SolanaAppContextDataSourceContext =

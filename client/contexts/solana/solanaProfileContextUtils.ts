@@ -20,7 +20,7 @@ import { getUpsertUserDataTxn } from '../../../util/solana/solanaProgramProfileU
 import {
   ClientUpsertUserDataParams,
   CreateUserProfileParams,
-} from '../types/MutationParamTypes';
+} from '../types/UserMutationParamTypes';
 
 const logger = getLogger('solanaProfileContextUtils');
 

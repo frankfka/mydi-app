@@ -1,21 +1,21 @@
 import useSWR from 'swr';
-import { Profile, ProfileDataRecordTypes } from '../../util/profile/Profile';
+import { Profile, ProfileDataRecordTypes } from '../../../util/profile/Profile';
 import { PublicKey } from '@solana/web3.js';
 import {
   ProfileNamespace,
   profileNamespaces,
-} from '../../util/profile/profileNamespaces';
+} from '../../../util/profile/profileNamespaces';
 import { pull } from 'lodash';
 import {
   getProfileAuthority,
   getProfileData,
-} from '../../util/solana/solanaProgramQueries';
+} from '../../../util/solana/solanaProgramQueries';
 import { Program } from '@project-serum/anchor';
 import { KeyedMutator } from 'swr/dist/types';
 import { useMemo } from 'react';
-import { solanaAppAuthorityKey } from '../../util/solana/solanaProgramUtils';
-import { getLogger } from '../../util/logger';
-import { callGetMetadataApi } from '../util/getMetadataApi';
+import { solanaAppAuthorityKey } from '../../../util/solana/solanaProgramUtils';
+import { getLogger } from '../../../util/logger';
+import { callGetMetadataApi } from '../../util/getMetadataApi';
 
 const logger = getLogger('useGetSolanaWalletProfile');
 
