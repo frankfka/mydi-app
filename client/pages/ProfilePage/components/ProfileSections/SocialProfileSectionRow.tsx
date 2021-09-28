@@ -25,6 +25,7 @@ type Props = {
   namespace: ProfileSocialNamespace;
   // If undefined, then a record has not been created
   dataRecord?: ProfileDataRecord<ProfileSocialAccountMetadata>;
+  hasAppAuthority?: boolean;
 };
 
 // Maps the namespace to the network name expected by `react-social-icons`
@@ -33,9 +34,11 @@ const socialNamespaceToNetworkName: Record<ProfileSocialNamespace, string> = {
   'social.discord': 'discord',
 };
 
+// TODO: need to disable this if no app authroity
 const SocialProfileSectionRow: React.FC<Props> = ({
   namespace,
   dataRecord,
+  hasAppAuthority,
 }) => {
   const oAuthType = socialNamespaceToOauthType[namespace];
   const namespaceDisplayName = oAuthTypeToDisplayName[oAuthType];
@@ -57,7 +60,12 @@ const SocialProfileSectionRow: React.FC<Props> = ({
       <SpacingContainer direction="row" alignItems="center">
         {/*Re-sync button*/}
         <Tooltip title="Reconnect to update data">
-          <IconButton onClick={openOAuthTab} size="small" color="secondary">
+          <IconButton
+            onClick={openOAuthTab}
+            size="small"
+            color="secondary"
+            disabled={!hasAppAuthority}
+          >
             <SyncIcon />
           </IconButton>
         </Tooltip>
@@ -68,7 +76,11 @@ const SocialProfileSectionRow: React.FC<Props> = ({
       </SpacingContainer>
     ) : (
       // Prompt to connect
-      <Button onClick={openOAuthTab} variant="outlined">
+      <Button
+        onClick={openOAuthTab}
+        variant="outlined"
+        disabled={!hasAppAuthority}
+      >
         Connect
       </Button>
     );

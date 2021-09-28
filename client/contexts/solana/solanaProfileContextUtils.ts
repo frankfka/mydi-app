@@ -9,7 +9,6 @@ import {
 } from '../../../util/solana/solanaProgramInstructions';
 import { solanaAppAuthorityKey } from '../../../util/solana/solanaProgramUtils';
 import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
-import { ProfileGeneralMetadata } from '../../../util/profile/ProfileMetadata';
 import { Program } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import {
@@ -18,17 +17,12 @@ import {
 } from '../../../util/solana/solanaProgramQueries';
 import { getLogger } from '../../../util/logger';
 import { getUpsertUserDataTxn } from '../../../util/solana/solanaProgramProfileUtils';
+import {
+  ClientUpsertUserDataParams,
+  CreateUserProfileParams,
+} from '../types/MutationParamTypes';
 
 const logger = getLogger('solanaProfileContextUtils');
-
-export type CreateUserProfileParams = ProfileGeneralMetadata & {
-  createAppAuthority: boolean; // Whether to add instruction to also create an authorization for our app
-};
-
-export type ClientUpsertUserDataParams = {
-  data: any;
-  namespace: ProfileNamespace;
-};
 
 /**
  * Creates a brand new user profile given the params

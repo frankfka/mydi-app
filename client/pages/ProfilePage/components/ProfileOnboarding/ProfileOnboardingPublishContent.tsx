@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SpacingContainer from '../../../../components/SpacingContainer';
 import { Alert, Button, Typography } from '@mui/material';
-import { useSolanaProfileContext } from '../../../../contexts/solana/SolanaProfileContext';
+import { useSolanaAppContextDataSource } from '../../../../contexts/solana/SolanaAppContextDataSourceContext';
 import { OnboardingProfileFormValues } from './ProfileOnboardingProfileForm';
 import { isTransactionSigningDeniedError } from '../../../../contexts/solana/solanaWalletContextUtils';
 import LoaderButton from '../../../../components/LoaderButton';
@@ -18,7 +18,7 @@ const ProfileOnboardingPublishContent: React.FC<Props> = ({
   userProfileValues,
 }) => {
   // Profile context
-  const solanaProfileContext = useSolanaProfileContext();
+  const solanaProfileContext = useSolanaAppContextDataSource();
 
   // Publish states
   const [isPublishing, setIsPublishing] = useState(false);

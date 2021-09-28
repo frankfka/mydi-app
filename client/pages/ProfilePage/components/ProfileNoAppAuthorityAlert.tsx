@@ -19,7 +19,7 @@ const ProfileNoAppAuthorityAlert: React.FC<AlertProps> = (props) => {
     }
     setIsLoadingAuth(true);
     try {
-      await appContext.solanaProfileState.createAppAuthority();
+      await appContext.createAppAuthority();
     } catch (err) {
       logger.error('Error creating app authority', err);
       globalViewContext.showSnackbar({

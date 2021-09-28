@@ -1,11 +1,7 @@
-import { WalletType } from '../../types/WalletType';
+import { Wallet } from '../../types/Wallet';
 
 export type AppSessionData = {
   wallet?: CurrentWalletSessionData;
 };
 
-export type CurrentWalletSessionData = {
-  // Pubkey on Solana, address on Terra
-  walletIdentifier: string;
-  type: WalletType;
-};
+export type CurrentWalletSessionData = Wallet;

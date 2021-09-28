@@ -35,7 +35,7 @@ const ProfilePage = () => {
   }
 
   let walletButtonContent: JSX.Element | undefined;
-  if (appState.currentUserPubKey && !appState.isLoading) {
+  if (appState.connectedWallet != null && !appState.isLoading) {
     walletButtonContent = (
       <Box
         sx={{
@@ -57,7 +57,7 @@ const ProfilePage = () => {
     profileAltContent = <LoadingView />;
   } else if (appState.isError) {
     profileAltContent = <ErrorInfoView />;
-  } else if (appState.currentUserPubKey == null) {
+  } else if (appState.connectedWallet == null) {
     profileAltContent = <ConnectWalletContainer />;
   } else if (appState.nonExistentProfile) {
     profileAltContent = (
