@@ -1,6 +1,6 @@
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
-import { SolanaProfileContextProvider } from '../client/contexts/solana/SolanaProfileContext';
+import { SolanaProfileContextProvider } from '../client/contexts/solana/SolanaAppContextDataSourceContext';
 import { EmotionCache } from '@emotion/react';
 
 import '../styles/global.css';

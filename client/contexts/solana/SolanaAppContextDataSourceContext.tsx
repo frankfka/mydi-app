@@ -1,50 +1,36 @@
 import React, { createContext, useContext } from 'react';
-import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import {
   getSolanaConnection,
   getSolanaProvider,
 } from '../../../util/solana/solanaNetwork';
 import { Program, Provider, Wallet } from '@project-serum/anchor';
-import { getProfileSolanaProgram } from '../../../util/solana/solanaProgramUtils';
+import {
+  getProfileSolanaProgram,
+  solanaAppAuthorityKey,
+} from '../../../util/solana/solanaProgramUtils';
 import {
   GetSolanaWalletProfileParams,
-  GetSolanaWalletProfileState,
   useGetSolanaWalletProfile,
-} from '../../hooks/useGetSolanaWalletProfile';
-import { ProfileGeneralMetadata } from '../../../util/profile/ProfileMetadata';
+} from './useGetSolanaWalletProfile';
 import { ProfileNamespace } from '../../../util/profile/profileNamespaces';
 import {
-  ClientUpsertUserDataParams,
   createAppAuthority,
   createUserProfile,
   deleteAppAuthority,
   deleteUserData,
   upsertUserData,
 } from './solanaProfileContextUtils';
+import {
+  ClientUpsertUserDataParams,
+  CreateUserProfileParams,
+} from '../types/UserMutationParamTypes';
+import AppContextDataSourceState from '../types/AppContextDataSourceState';
 
-type CreateUserProfileParams = ProfileGeneralMetadata & {
-  createAppAuthority: boolean; // Whether to add instruction to also create an authorization for our app
-};
-
-export type SolanaProfileContextState = {
-  // Base state
-  wallet: WalletContextState;
-  // Profile state
-  userProfile: GetSolanaWalletProfileState;
-  // Loading/err
-  isLoading: boolean;
-  isError: boolean;
-  // Utils
-  createUserProfile(params: CreateUserProfileParams): Promise<string>;
-  upsertUserData(params: ClientUpsertUserDataParams): Promise<string>; // For a specific namespace
-  deleteUserData(namespace: ProfileNamespace): Promise<string | undefined>; // Undefined txn ID if there's no data to delete
-  createAppAuthority(): Promise<string>; // Requests authorization for our app with "all" scope
-  deleteAppAuthority(): Promise<string | undefined>;
-};
-
-export const SolanaProfileContext = createContext<SolanaProfileContextState>(
-  {} as unknown as SolanaProfileContextState
-);
+export const SolanaAppContextDataSourceContext =
+  createContext<AppContextDataSourceState>(
+    {} as unknown as AppContextDataSourceState
+  );
 
 export const SolanaProfileContextProvider: React.FC = ({ children }) => {
   const wallet = useWallet();
@@ -83,12 +69,24 @@ export const SolanaProfileContextProvider: React.FC = ({ children }) => {
     return res;
   }
 
+  const appAuthorityEnabled =
+    userProfile.profile?.authorities[solanaAppAuthorityKey.toString()]
+      ?.scope === 'all';
+
   /*
   Data to store in our context
    */
-  const contextData: SolanaProfileContextState = {
-    wallet,
-    userProfile,
+  const contextData: AppContextDataSourceState = {
+    connectedWallet:
+      wallet.publicKey != null
+        ? {
+            type: 'solana',
+            walletIdentifier: wallet.publicKey.toString(),
+          }
+        : undefined,
+    profile: userProfile.profile,
+    appAuthorityEnabled,
+    nonExistentProfile: userProfile.nonExistentProfile,
     isLoading: userProfile.isLoading,
     isError: userProfile.isError,
     async createUserProfile(params: CreateUserProfileParams) {
@@ -116,15 +114,18 @@ export const SolanaProfileContextProvider: React.FC = ({ children }) => {
         return deleteAppAuthority(connection, wallet, program);
       });
     },
+    async refreshUserProfile() {
+      await userProfile.mutate();
+    },
   };
 
   return (
-    <SolanaProfileContext.Provider value={contextData}>
+    <SolanaAppContextDataSourceContext.Provider value={contextData}>
       {children}
-    </SolanaProfileContext.Provider>
+    </SolanaAppContextDataSourceContext.Provider>
   );
 };
 
-export const useSolanaProfileContext = () => {
-  return useContext(SolanaProfileContext);
+export const useSolanaAppContextDataSource = () => {
+  return useContext(SolanaAppContextDataSourceContext);
 };

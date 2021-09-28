@@ -28,7 +28,11 @@ const SolanaWalletButton: React.FC<Props> = (props) => {
     }
   } else if (wallet) {
     // Has selected wallet - prompt to connect
-    onButtonClick = connect;
+    onButtonClick = async () => {
+      try {
+        await connect();
+      } catch (e) {}
+    };
     buttonText = 'Connect';
   } else if (isLoading) {
     buttonText = 'Loading';

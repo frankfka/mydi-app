@@ -1,10 +1,10 @@
 import React from 'react';
-import { useSolanaProfileContext } from '../../../contexts/solana/SolanaProfileContext';
+import { useSolanaAppContextDataSource } from '../../../contexts/solana/SolanaAppContextDataSourceContext';
 import SpacingContainer from '../../../components/SpacingContainer';
 import { Button } from '@mui/material';
 
 const TestSolanaProfileSection = () => {
-  const solanaContext = useSolanaProfileContext();
+  const solanaContext = useSolanaAppContextDataSource();
 
   const testCreateDummyProfile = async () => {
     await solanaContext.createUserProfile({
@@ -24,11 +24,9 @@ const TestSolanaProfileSection = () => {
       <Button onClick={testCreateDummyProfile}>Create Profile</Button>
       <Button onClick={testDeleteDummyProfile}>Delete Profile</Button>
       {/*profile info*/}
-      {solanaContext.userProfile.profile && (
+      {solanaContext.profile && (
         <div>
-          <pre>
-            {JSON.stringify(solanaContext.userProfile.profile, null, 2)}
-          </pre>
+          <pre>{JSON.stringify(solanaContext.profile, null, 2)}</pre>
         </div>
       )}
     </SpacingContainer>

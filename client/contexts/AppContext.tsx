@@ -1,37 +1,19 @@
 import React, { createContext, useContext, useEffect } from 'react';
-import { WalletContextState } from '@solana/wallet-adapter-react';
-import useSession, { UseSessionState } from '../hooks/useSession';
-import { Profile } from '../../util/profile/Profile';
-import {
-  SolanaProfileContextState,
-  useSolanaProfileContext,
-} from './solana/SolanaProfileContext';
+import useSession from '../hooks/useSession';
+import { useSolanaAppContextDataSource } from './solana/SolanaAppContextDataSourceContext';
 import { getLogger } from '../../util/logger';
-import { solanaAppAuthorityKey } from '../../util/solana/solanaProgramUtils';
+import { AppSessionData } from '../../util/session/SessionTypes';
+import AppContextDataSourceState from './types/AppContextDataSourceState';
+import { useCurrentWallet, walletsAreEquivalent } from './useCurrentWallet';
 
 type AppContextState = {
   /*
-  Child States
-   */
-  // Wallet state
-  walletState: WalletContextState;
-  // Session state
-  sessionState: UseSessionState;
-  // Profile state
-  solanaProfileState: SolanaProfileContextState;
-  /*
-  Derived state
+  State
    */
   isLoading: boolean;
   isError: boolean;
-  currentUserPubKey?: string;
-  profile?: Profile;
-  appAuthorityEnabled: boolean; // Whether our app is authorized to make profile changes
-  nonExistentProfile: boolean; // Should prompt user to create a user
-  /*
-  Util fns
-   */
-};
+  currentSessionData?: AppSessionData;
+} & AppContextDataSourceState;
 
 const logger = getLogger('AppContext');
 
@@ -41,29 +23,24 @@ export const AppContext = createContext<AppContextState>(
 
 export const AppContextProvider: React.FC = ({ children }) => {
   const sessionState = useSession();
-  const solanaProfileState = useSolanaProfileContext();
+  const solanaAppContextDataSource = useSolanaAppContextDataSource();
 
-  const currentWalletPubKey = solanaProfileState.wallet.publicKey?.toString();
-  const sessionWalletIdentifier =
-    sessionState.session?.wallet?.walletIdentifier;
+  const currentWallet = useCurrentWallet();
+  const sessionWallet = sessionState.session?.wallet;
 
-  const appAuthorityEnabled =
-    solanaProfileState.userProfile?.profile?.authorities[
-      solanaAppAuthorityKey.toString()
-    ]?.scope === 'all'; // We require "all" scope
+  // When supporting additional data sources, we can just change this
+  const appContextDataSourceState: AppContextDataSourceState =
+    solanaAppContextDataSource;
 
   // Reload session on public key change
   useEffect(() => {
     const updateSession = async () => {
-      if (currentWalletPubKey != null) {
-        // Pubkey mismatch - update session
-        if (currentWalletPubKey !== sessionWalletIdentifier) {
-          await sessionState.createSession({
-            walletIdentifier: currentWalletPubKey,
-            type: 'solana',
-          });
+      if (currentWallet != null) {
+        // Wallet mismatch - update session
+        if (!walletsAreEquivalent(currentWallet, sessionWallet)) {
+          await sessionState.createSession(currentWallet);
         }
-      } else if (sessionWalletIdentifier != null) {
+      } else if (sessionWallet != null) {
         // Wallet is disconnected BUT there is a pubkey in session
         // Normally we should destroy the session, but to support oAuth,
         // we "cache" the latest session
@@ -72,32 +49,24 @@ export const AppContextProvider: React.FC = ({ children }) => {
     };
 
     updateSession();
-  }, [currentWalletPubKey, sessionWalletIdentifier, sessionState]);
+  }, [currentWallet, sessionWallet, sessionState]);
 
   // Debug logging
   useEffect(() => {
     logger.debug('Current AppContext State', {
-      walletPubKey: currentWalletPubKey,
-      sessionPubKey: sessionWalletIdentifier,
-      profile: solanaProfileState.userProfile.profile,
+      wallet: currentWallet,
+      session: sessionState.session,
+      profile: appContextDataSourceState.profile,
     });
-  }, [
-    sessionWalletIdentifier,
-    currentWalletPubKey,
-    solanaProfileState.userProfile.profile,
-  ]);
+  }, [sessionState.session, currentWallet, appContextDataSourceState.profile]);
 
-  const isLoading = sessionState.isLoading || solanaProfileState.isLoading;
-  const isError = sessionState.isError || solanaProfileState.isError;
+  const isLoading =
+    sessionState.isLoading || appContextDataSourceState.isLoading;
+  const isError = sessionState.isError || appContextDataSourceState.isError;
 
   const contextState: AppContextState = {
-    walletState: solanaProfileState.wallet,
-    sessionState: sessionState,
-    solanaProfileState: solanaProfileState,
-    currentUserPubKey: currentWalletPubKey,
-    profile: solanaProfileState.userProfile.profile,
-    nonExistentProfile: solanaProfileState.userProfile.nonExistentProfile,
-    appAuthorityEnabled,
+    ...appContextDataSourceState,
+    currentSessionData: sessionState.session,
     isLoading,
     isError,
   };

@@ -45,14 +45,14 @@ const GeneralProfileSectionContent: React.FC<Props> = ({ dataRecord }) => {
   const onSubmit: SubmitHandler<ProfileFormValues> = async (data) => {
     setIsSaving(true);
     try {
-      await appContext.solanaProfileState.upsertUserData({
+      await appContext.upsertUserData({
         data,
         namespace: 'general',
       });
 
       cancelEditing(false);
       // Also reload profile data
-      appContext.solanaProfileState.userProfile.mutate();
+      appContext.refreshUserProfile();
     } catch (err) {
       if (isTransactionSigningDeniedError(err)) {
         globalViewContext.showSnackbar({

@@ -7,7 +7,7 @@ import ProfileOnboardingProfileForm, {
 import { ONBOARDING_STEPS } from './onboardingSteps';
 import ProfileOnboardingPublishContent from './ProfileOnboardingPublishContent';
 import { Box } from '@mui/material';
-import { useSolanaProfileContext } from '../../../../contexts/solana/SolanaProfileContext';
+import { useSolanaAppContextDataSource } from '../../../../contexts/solana/SolanaAppContextDataSourceContext';
 import ProfileOnboardingWelcomeContent from './ProfileOnboardingWelcomeContent';
 
 type Props = {
@@ -17,13 +17,13 @@ type Props = {
 const ProfileOnboardingWizard: React.FC<Props> = ({
   onDoneOnboardingClicked,
 }) => {
-  const solanaProfileContext = useSolanaProfileContext();
+  const solanaProfileContext = useSolanaAppContextDataSource();
 
   // Success state - default to whether we need to create a user profile, so
   // if this accidentally gets shown when a profile is retrieved, we just show the
   // success content
   const [onboardSuccess, setOnboardSuccess] = useState(
-    !solanaProfileContext.userProfile.nonExistentProfile
+    !solanaProfileContext.nonExistentProfile
   );
 
   // Current step + utils
