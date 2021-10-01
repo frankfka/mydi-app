@@ -2,6 +2,7 @@ import { getCid } from './cidUtils';
 import cache from 'memory-cache';
 import { getLogger } from '../logger';
 import { web3StorageClient } from './web3Storage';
+import any from 'promise.any';
 
 const logger = getLogger('getDataFromCid');
 
@@ -12,7 +13,7 @@ const logger = getLogger('getDataFromCid');
 export const getDataFromCid = async (cid: string): Promise<any | undefined> => {
   const cleanedCid = getCid(cid);
 
-  const fetchedData = Promise.any([
+  const fetchedData = any([
     getDataFromInfura(cleanedCid),
     getDataFromWeb3Storage(cleanedCid),
   ]);
